@@ -1,10 +1,11 @@
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import argon from 'argon2';
 import nodemailer from 'nodemailer';
 import { deleteRow, SECRET_KEY } from '../utils/index.js';
 import { getOne, insertRow, throwError, updateRow } from "../utils/index.js";
 import { UserOtp } from '../model/user-otps.model.js';
 import { User } from '../model/users.model.js';
+
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -186,9 +187,9 @@ const generateJWT = async (value) => {
 }
 
 const hashPassword = async (password) => {
-    return await bcrypt.hash(password, 12);
+    return await argon.hash(password);
 }
 
 const comparePassword = async (password, hashedpassword) => {
-    return await bcrypt.compare(password, hashedpassword);
+    return await argon.verify(hashedpassword, password)
 }
