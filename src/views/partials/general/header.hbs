@@ -1,0 +1,39 @@
+<div class="header">
+    <div class="header-inner">
+        <div class="header-flex">
+            <div class="header-left">
+                <button class="button button-icon header-burger-bar">
+                    <i class="material-symbols-outlined">menu</i>
+                </button>
+                <a class="header-logo" href="/">
+                    <img src="/public/images/logo.jfif" width="50" height="30">
+                </a>
+            </div>
+            <div class="header-content">
+                <div class="input-wrapper" id="headerInputWrapper">
+                    <input type="text" id="headerInput" class="input-self" placeholder="მოძებნე მომხმარებლები">
+                    <div class="input-meta-left">
+                        <i class="material-symbols-outlined">search</i>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="button button-icon" id="headerMessage" data-tooltip="მესიჯები">
+                    <i class="material-symbols-outlined">chat</i>
+                </button>
+                <button class="button button-icon" id="headerAccount" data-tooltip="მომხმარებელი">
+                    <i class="material-symbols-outlined">person</i>
+                </button>
+                <div class="toggle-container">
+                    <input type="checkbox" class="toggle-input" id="toggle0" {{isChecked mode}}>
+                    <label class="toggle-label-header toggle-label-animated" for="toggle0">
+                        <span class="toggle-span toggle-span-animated" style="left: {{#compare mode '===' 'light'}}1px{{else}}27px{{/compare}};"></span>
+                        <i class="material-symbols-outlined {{#compare mode '===' 'light'}}toggle-first-activated{{/compare}}">sunny</i>
+                        <i class="material-symbols-outlined {{#compare mode '===' 'dark'}}toggle-second-activated{{/compare}}">dark_mode</i>
+                    </label>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>

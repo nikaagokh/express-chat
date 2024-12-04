@@ -1,0 +1,33 @@
+<div class="myinfo-wrapper">
+    <h2>ნავიგაცია</h2>
+    <div class="myinfo-list">
+        <a class="button myinfo-button {{pathActive pathname 'index'}}" href="/">
+            <i class="material-symbols-outlined">home</i>
+            <span>მთავარი</span>
+        </a>
+        <a class="button myinfo-button {{pathActive pathname 'user'}}" href="/user/{{userName}}">
+            <i class="material-symbols-outlined">contact_page</i>
+            <span>ჩემი გვერდი</span>
+        </a>
+        <a class="button myinfo-button {{pathActive pathname 'friends'}}" href="/friends">
+            <i class="material-symbols-outlined">group</i>
+            <span>მეგობრები</span>
+        </a>
+        <a class="button myinfo-button {{pathActive pathname 'saves'}}" href="/saves">
+            <i class="material-symbols-outlined">bookmark</i>
+            <span>შენახულები</span>
+        </a>
+        <a class="button myinfo-button {{pathActive pathname 'outgoing-requests'}}" href="/outgoing-requests">
+            <i class="material-symbols-outlined">outbox</i>
+            <span>მეგობრობის გაგზავნები</span>
+        </a>
+        <a class="button myinfo-button {{pathActive pathname 'ingoing-requests'}}" href="/ingoing-requests">
+            <i class="material-symbols-outlined">move_to_inbox</i>
+            <span>მეგობრობის თხოვნები</span>
+        </a>
+        <a class="button myinfo-button {{pathActive pathname 'blocks'}}" href="/blocks">
+            <i class="material-symbols-outlined">block</i>
+            <span>დაბლოკილები</span>
+        </a>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+<div class="content-container">
+    {{#notEmpty blocks}}
+    <h2>დაბლოკილები</h2>
+    <div class="list" id="blocksList">
+        {{#each blocks as |block i|}}
+        <div class="list-item list-divider" data-user-id="{{block.user_id}}" data-user-name="{{block.user_name}}">
+            <img src="/public/images/users/user.png" class="list-item-avatar">
+            <span class="list-item-content">
+                <h4 class="list-item-title">{{block.full_name}}</h4>
+            </span>
+            <button class="button button-icon" data-tooltip="ბლოკის მოხსნა">
+                <i class="material-symbols-outlined">undo</i>
+            </button>
+        </div>
+        {{/each}}
+    </div>
+    {{else}}
+    <div class="empty-list-wrapper">
+        <img src="/public/images/empty.webp" width="300" height="300">
+        <div class="empty-search-suggestion">
+            <h3>თქვენ არავინ გყავთ დაბლოკილი ! </h3>
+        </div>
+    </div>
+    {{/notEmpty}}
+</div>

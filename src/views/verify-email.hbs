@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ka">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>მეილის ვერიფიკაცია</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="/public/css/styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="global-dialog-container">
+            <div class="verify-email-container">
+                <div class="verify-email-header">
+                    <a class="button button-icon" href="/login">
+                        <i class="material-symbols-outlined">chevron_left</i>
+                    </a>
+                    <h3>მეილის ვერიფიკაცია</h3>
+                </div>
+                <div class="verify-email-body">
+                    <div class="verify-email-wrapper">
+                        <div class="input-wrapper">
+                            <input type="text" id="emailInput" class="input-self" placeholder="მეილი">
+                            <div class="input-meta-left">
+                                <i class="material-symbols-outlined">email</i>
+                            </div>
+                        </div>
+                        <button class="button verify-email-otp" id="submitOtpButton">გაგზავნა</button>
+                    </div>
+                    <div class="input-wrapper">
+                        <input type="text" id="otpInput" class="input-self" placeholder="ერთჯერადი კოდი">
+                        <div class="input-meta-left">
+                            <i class="material-symbols-outlined">lock</i>
+                        </div>
+                    </div>
+                    <button class="button login-button" id="submitButton">
+                        შესვლა
+                    </button>
+                    <a href="/verify-email" class="button verify-button" id="regButton">
+                        რეგისტრაცია
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="overlay-container"></div>
+    <div class="toast-container"></div>
+    <script src="/public/js/verify-email/verify-email.mjs" type="module"></script>
+</body>
+
+</html>

@@ -1,0 +1,24 @@
+<div class="contacts-wrapper">
+    <div class="contacts-header">
+        <div class="input-wrapper" id="contactsInputWrapper">
+            <input type="text" id="contactsInput" class="input-self contacts-input" placeholder="გაფილტრე სახელით">
+            <div class="input-meta-left">
+                <i class="material-symbols-outlined">manage_search</i>
+            </div>
+        </div>
+        <button class="button button-icon" data-tooltip="ჯგუფის შექმნა" id="contactsAddButton">
+            <i class="material-symbols-outlined">group_add</i>
+        </button>
+    </div>
+    <div class="contacts-list">
+        <h3>კონტაქტები</h3>
+        <div class="contacts-group">
+        {{#each contacts as |contact i|}}
+        <div class="contacts-list-item list-hoverable" data-conversation-id="{{contact.conversation_id}}" data-user-id="{{contact.user_id}}" data-user-name="{{contact.user_name}}">
+            <img class="contacts-list-item-media" src="/public/images/users/{{contact.image}}">
+            <span class="contacts-list-item-content">{{contact.full_name}}</span>
+        </div>
+        {{/each}}
+        </div>
+    </div>
+</div>

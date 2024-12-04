@@ -1,0 +1,169 @@
+@import url('../font/font.css');
+
+*,
+::before,
+::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "NotoSansGeorgianRegular";
+    font-feature-settings: 'case' on;
+    -moz-font-feature-settings: 'case';
+    -webkit-font-feature-settings: 'case';
+}
+
+:root {
+    --main-bg: #f7f8f9;
+    --secondary-bg: #fff;
+    --main-color: #253988;
+    --main-darker-button:#253988;
+    --success-color: #5b932b;
+    --warning-color: crimson;
+    --danger-color: #dc143c;
+    --main-background-color: #f7f8f9;
+    --secondary-background-color: #fff;
+    --informative-toaster-c: #3b82f6;
+    --informative-toaster-bg: rgba(219, 234, 254, 0.7);
+    --warning-toaster-c: #ff5757;
+    --warning-toaster-bg: rgba(255, 231, 230, 0.7);
+    --success-toaster-c: #1ea97c;
+    --success-toaster-bg: rgba(228, 244, 240, 0.7);
+    --toaster-width: 0 0 0 6px;
+    --success-toaster: #5b932b;
+    --warning-toaster: red;
+    --text-heading-color: #231444;
+    --text-color: #000;
+    --text-color-cnt: #000;
+    --dialog-text-color: #000;
+    --pagination-color: #253988;
+    --header-after: linear-gradient(270deg, #c6067f 0%, #d6405b 13%, #fac00c 39%, #ccc211 60%, #006767 80%, #c6067f 100%);
+    --footer-bg: #253988;
+    --footer-text: #fff;
+    --footer-before: linear-gradient(270deg, #c6067f 0%, #d6405b 13%, #fac00c 39%, #ccc211 60%, #006767 80%, #c6067f 100%);
+    --font-base-size: 13px;
+    --border-color: #e5e7f1;
+    --border-style: solid;
+    --border-width: 1px;
+    --custom-border: 2px solid var(--border-color);
+    --auth-button: #253988;
+    --scroll-color: #253988;
+    --active-color: #f7f8f9;
+    --button-border: 0px;
+    --badge-color: #fff;
+    --register-button-bg: #fff;
+    --register-button-c: #000;
+    --box-shadow: 0 1px 2px #0004;
+    --more-button-bg: #253988;
+    --more-button-c: #fff;
+    --light-bg: #f7f8f9;
+    --slider3d-border: #f7f8f9;
+    --review-divider: #f7f8f9;
+    --mark-bg: #253988;
+    --receive-message: #f2f0f5;
+    --receive-text: #000;
+    --message-border: #253988;
+    --message-text: steelblue;
+}
+
+.dark {
+    --main-bg: #22272e;
+    --secondary-bg: #22272e;
+    --main-color: #c5d1de;
+    --main-darker-button:#2A59CB;
+    --text-color: #c5d1de;
+    --text-color-cnt: #fff;
+    --dialog-text-color: #fff;
+    --success-color: #9BD369;
+    --dark-blue: #A4C5F9;
+    --warning-color: #F9AEBC;
+    --danger-color: #F9AEBC;
+    --informative-toaster: #fff;
+    --informative-toaster-c: var(--text-color);
+    --informative-toaster-bg: var(--main-background-color);
+    --warning-toaster-c: var(--text-color);
+    --warning-toaster-bg: var(--main-background-color);
+    --success-toaster-c: var(--text-color);
+    --success-toaster-bg: var(--main-background-color);
+    --main-background-color: #30363d;
+    --secondary-background-color: #30363d;
+    --border-color: #30363d;
+    --header-after: linear-gradient(60deg, black, transparent);
+    --footer-bg: #202129;
+    --footer-text: #fff;
+    --footer-before: linear-gradient(15deg, black, transparent);
+    --custom-border: 2px solid var(--border-color);
+    --auth-button: #30363d;
+    --scroll-color: #30363d;
+    --active-color: #30363d;
+    --pagination-color: #30363d;
+    --button-border: 1px solid var(--border-color);
+    --badge-color: #000;
+    --register-button-bg: #30363d;
+    --register-button-c: #fff;
+    --box-shadow: 0 -3px 10px #0004;
+    --more-button-bg: #30363d;
+    --more-button-c: #fff;
+    --light-bg: #30363d;
+    --slider3d-button: #c5d1de;
+    --review-divider: #c5d1de;
+    --mark-bg: #30363d;
+    --receive-message: #30363d;
+    --receive-text: #fff;
+    --message-border: #30363d;
+    --message-text: #0084ff;
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+    overflow-y: scroll;
+    background-color: #f7f8f9;
+    appearance: none;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--scroll-color);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+}
+
+*:focus {
+    outline: none;
+}
+
+.material-symbols-outlined {
+    color: var(--main-color);
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 200,
+        'GRAD' 200,
+        'opsz' 24
+}
+
+body {
+    background-color: var(--main-bg);
+}
+
+.tooltip {
+    font-family: "NotoSansGeorgianThin";
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.body-scroll-block {
+    overflow-y: scroll;
+    position: fixed;
+    width: 100%;
+}
+
+.app-container {
+    margin-top: 4rem;
+    font-size: 12px;
+    position: relative;
+}
