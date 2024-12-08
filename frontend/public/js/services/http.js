@@ -114,6 +114,17 @@ class HttpService {
             })
     }
 
+    async sendRequest(user_id) {
+        const options = this.generateOptions({ user_id });
+        return fetch(`http://${this.host}/api/relations/send-request`, options)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('');
+                }
+                return response.json();
+            })
+    }
+
     async unSendRequest(user_id) {
         const options = this.generateOptions({ user_id });
         return fetch(`http://${this.host}/api/relations/unsend-request`, options)

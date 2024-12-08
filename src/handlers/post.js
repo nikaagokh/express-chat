@@ -155,7 +155,7 @@ ORDER BY p.created_at DESC`;
             post.comments = JSON.parse(post.comments);
         }
     })
-    return { posts };
+    return posts;
 }
 
 export const getSharedPosts = async (user_id) => {
@@ -185,7 +185,7 @@ ORDER BY p.created_at DESC`;
             post.comments = JSON.parse(post.comments);
         }
     })
-    return { posts };
+    return posts;
 }
 
 export const getPostById = async (user_id, post_id) => {
@@ -213,7 +213,7 @@ ORDER BY p.created_at DESC`;
             post.comments = JSON.parse(post.comments);
         }
     })
-    return { posts };
+    return posts;
 }
 
 export const sharePost = async (user_id, post_id) => {
@@ -290,10 +290,18 @@ export const postManageLike = async (user_id, post_id) => {
     const postReaction = await getOne(sql, [post_id, user_id]);
     if (postReaction) {
         deleteRow('post_reactions', { post_reaction_id: postReaction.post_reaction_id });
-        return { like: false};
+        return { like: false };
     } else {
         const postReaction = new PostReaction(1, post_id, user_id);
         insertRow('post_reactions', postReaction);
+        const sql = `SELECT pr.post_reaction_id FROM post_reactions pr 
+                 LEFT JOIN posts p ON p.post_id = pr.post_id
+                 WHERE pr.post_id = ? AND pr.user_id = ? AND pr.reaction_type = 0
+                 `
+        const unlike = await getOne(sql, [post_id, user_id]);
+        if(unlike) {
+            deleteRow('post_reactions', {post_reaction_id: unlike.post_reaction_id});
+        }
         return { like: true };
     }
 }
@@ -310,6 +318,14 @@ export const postManageUnLike = async (user_id, post_id) => {
     } else {
         const postReaction = new PostReaction(0, post_id, user_id);
         insertRow('post_reactions', postReaction);
+        const sql = `SELECT pr.post_reaction_id FROM post_reactions pr 
+                 LEFT JOIN posts p ON p.post_id = pr.post_id
+                 WHERE pr.post_id = ? AND pr.user_id = ? AND pr.reaction_type = 1
+                 `
+        const like = await getOne(sql, [post_id, user_id]);
+        if(like) {
+            deleteRow('post_reactions', {post_reaction_id: like.post_reaction_id});
+        }
         return { unlike: true };
     }
 }
@@ -340,13 +356,13 @@ export const postDeleteComment = async (user_id, post_comment_id) => {
     return { post_comment_id: pc_id };
 }
 
-const getPostLikes = async (post_id) => {
+export const getPostLikes = async (post_id) => {
     const sql = `SELECT COUNT(*) as likes FROM post_reactions WHERE post_id = ? AND reaction_type = 1`;
     const likesObject = await getOne(sql, [post_id]);
     return likesObject.likes;
 }
 
-const getPostUnlikes = async (post_id) => {
+export const getPostUnlikes = async (post_id) => {
     const sql = `SELECT COUNT(*) as unlikes FROM post_reactions WHERE post_id = ? AND reaction_type = 0`;
     const unlikesObject = await getOne(sql, [post_id]);
     return unlikesObject.unlikes;

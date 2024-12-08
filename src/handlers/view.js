@@ -13,15 +13,14 @@ export const getIndexView = async (cookies) => {
             Cookie: serializeCookies(cookies)
         }
     });
-    const { userName } = userNameResponse.data;
-
+    const { user_name } = userNameResponse.data;
     const postsResponse = await axios.get('http://localhost:3005/api/post/all-posts', {
         headers: {
             Cookie: serializeCookies(cookies)
         }
     });
     const posts = postsResponse.data;
-    return { contacts, userName, posts };
+    return { contacts, user_name, posts };
 }
 
 export const getFriendsView = async (cookies) => {
@@ -42,8 +41,35 @@ export const getFriendsView = async (cookies) => {
             Cookie: serializeCookies(cookies)
         }
     });
-    const { userName } = userNameResponse.data;
-    return { friends, contacts, userName };
+    const { user_name } = userNameResponse.data;
+    return { friends, contacts, user_name };
+}
+
+export const getUserFriendsView = async (cookies, userName) => {
+    const friendsResponse = await axios.get(`http://localhost:3005/api/users/contact-users/${userName}`, {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const friends = friendsResponse.data;
+    console.log(friends);
+    const userResponse = await axios.get(`http://localhost:3005/api/users/about/${userName}`, {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const user = userResponse.data;
+    console.log(user);
+
+    const contactsResponse = await axios.get('http://localhost:3005/api/relations/contact-users', {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const contacts = contactsResponse.data;
+    console.log(contacts);
+    return { user, friends, contacts }
+
 }
 
 export const getOutgoingRequestsView = async (cookies) => {
@@ -64,8 +90,36 @@ export const getOutgoingRequestsView = async (cookies) => {
             Cookie: serializeCookies(cookies)
         }
     });
-    const { userName } = userNameResponse.data;
-    return { requests, contacts, userName };
+    const { user_name } = userNameResponse.data;
+    return { requests, contacts, user_name };
+}
+
+export const getOutgoingUserRequestsView = async (cookies) => {
+    const requestsResponse = await axios.get('http://localhost:3005/api/relations/send-requests', {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const requests = requestsResponse.data;
+    const contactsResponse = await axios.get('http://localhost:3005/api/relations/contact-users', {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const contacts = contactsResponse.data;
+    const userNameResponse = await axios.get('http://localhost:3005/api/users/userName', {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const { user_name } = userNameResponse.data;
+    const userResponse = await axios.get(`http://localhost:3005/api/users/about/${user_name}`, {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const user = userResponse.data;
+    return { requests, contacts, user_name, user };
 }
 
 export const getIngoingRequestsView = async (cookies) => {
@@ -86,8 +140,36 @@ export const getIngoingRequestsView = async (cookies) => {
             Cookie: serializeCookies(cookies)
         }
     });
-    const { userName } = userNameResponse.data;
-    return { requests, contacts, userName };
+    const { user_name } = userNameResponse.data;
+    return { requests, contacts, user_name, user };
+}
+
+export const getIngoingUserRequestsView = async (cookies) => {
+    const requestsResponse = await axios.get('http://localhost:3005/api/relations/receive-requests', {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const requests = requestsResponse.data;
+    const contactsResponse = await axios.get('http://localhost:3005/api/relations/contact-users', {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const contacts = contactsResponse.data;
+    const userNameResponse = await axios.get('http://localhost:3005/api/users/userName', {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const { user_name } = userNameResponse.data;
+    const userResponse = await axios.get(`http://localhost:3005/api/users/about/${user_name}`, {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const user = userResponse.data;
+    return { requests, contacts, user_name, user };
 }
 
 export const getBlocksView = async (cookies) => {
@@ -108,12 +190,81 @@ export const getBlocksView = async (cookies) => {
             Cookie: serializeCookies(cookies)
         }
     });
-    const { userName } = userNameResponse.data;
-    return { blocks, contacts, userName };
+    const { user_name } = userNameResponse.data;
+    return { blocks, contacts, user_name };
 }
 
-export const getUserNameView = async (cookies) => {
+export const getUserBlocksView = async (cookies) => {
+    const blocksResponse = await axios.get('http://localhost:3005/api/relations/blocked-users', {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const blocks = blocksResponse.data;
+    const contactsResponse = await axios.get('http://localhost:3005/api/relations/contact-users', {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const contacts = contactsResponse.data;
+    const userNameResponse = await axios.get('http://localhost:3005/api/users/userName', {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const { user_name } = userNameResponse.data;
+    const userResponse = await axios.get(`http://localhost:3005/api/users/about/${user_name}`, {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const user = userResponse.data;
+    return { blocks, contacts, user_name, user };
+}
 
+export const getUserNameView = async (cookies, user_name) => {
+    const userResponse = await axios.get(`http://localhost:3005/api/users/about/${user_name}`, {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const user = userResponse.data;
+    const postsResponse = await axios.get(`http://localhost:3005/api/users/posts/${user_name}`, {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const posts = postsResponse.data;
+    const contactsResponse = await axios.get(`http://localhost:3005/api/relations/contact-users`, {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const contacts = contactsResponse.data;
+    return { user, posts, contacts };
+}
+
+export const getSharesView = async (cookies) => {
+    const postsResponse = await axios.get('http://localhost:3005/api/post/shared-posts', {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const posts = postsResponse.data;
+    console.log(posts, 'posts')
+    const contactsResponse = await axios.get('http://localhost:3005/api/relations/contact-users', {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const contacts = contactsResponse.data;
+    const userNameResponse = await axios.get('http://localhost:3005/api/users/userName', {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const { user_name } = userNameResponse.data;
+    return { posts, contacts, user_name };
 }
 
 export const getAccountInfoView = async (cookies) => {

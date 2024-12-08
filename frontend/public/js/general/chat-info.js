@@ -38,7 +38,7 @@ export class ChatInfo {
                </a>
                <button class="button chat-more-button" id="chatImages">
                  <i class="material-symbols-outlined settings-icon">image</i>
-                 <span>ფოტოები</span>
+                 <span>გალერია</span>
                </button>
                <button class="button chat-more-button" id="chatDocs">
                 <i class="material-symbols-outlined settings-icon">text_snippet</i>
@@ -59,7 +59,7 @@ export class ChatInfo {
                </a>
                <button class="button chat-more-button" id="chatImages">
                  <i class="material-symbols-outlined settings-icon">image</i>
-                 <span>ფოტოები</span>
+                 <span>გალერია</span>
                </button>
                <button class="button chat-more-button" id="chatDocs">
                 <i class="material-symbols-outlined settings-icon">text_snippet</i>

@@ -14,7 +14,7 @@
         <h3>კონტაქტები</h3>
         <div class="contacts-group">
         {{#each contacts as |contact i|}}
-        <div class="contacts-list-item list-hoverable" data-conversation-id="{{contact.conversation_id}}" data-user-id="{{contact.user_id}}" data-user-name="{{contact.user_name}}">
+        <div class="contacts-list-item list-hoverable {{#if contact.online}}contacts-list-item-active{{/if}}" data-conversation-id="{{contact.conversation_id}}" data-user-id="{{contact.user_id}}" data-user-name="{{contact.user_name}}">
             <img class="contacts-list-item-media" src="/public/images/users/{{contact.image}}">
             <span class="contacts-list-item-content">{{contact.full_name}}</span>
         </div>

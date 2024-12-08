@@ -11,15 +11,16 @@
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 </head>
 
-<body>
+<body class="{{detectMode mode}}">
     {{> general/header}}
     <div class="app-container">
-        {{> general/contacts}}
+        {{> general/myInfo}}
         <div class="main-content">
             {{> blocks/blocksPage}}
         </div>
-        {{> general/myInfo}}
+        {{> general/contacts}}
     </div>
+    {{> general/fixedBottom}}
     <audio id="audioMessage">
         <source src="/public/sounds/push.wav" type="audio/mpeg">
     </audio>

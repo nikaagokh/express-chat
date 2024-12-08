@@ -78,11 +78,11 @@ export const configureIO = (app) => {
     })
     eventEmitter.on('message.send', (ev) => {
         const message = ev.message;
-        const conversationId = ev.conversation.id;
+        const conversationId = ev.conversation.conversation_id;
         const conversationName = getConvName(conversationId);
         const sockets = gatewaySessionManager.getRoom(conversationName);
         sockets.forEach(socket => {
-            if (socket.userId !== message.userId) {
+            if (socket.userId !== message.user_id) {
                 message.sent = false;
                 socket.emit('onMessage', message);
                 socket.emit('onTyping', { typing: false })

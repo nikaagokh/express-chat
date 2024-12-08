@@ -37,9 +37,9 @@ export class ImageZoom {
                     ${this.zoom}X
                 </div>
                  <div class="zoom-actions">
-                 <button class="button button-icon" id="downloadButton">
+                 <a class="button button-icon" id="downloadButton" download>
                      <i class="material-symbols-outlined">download</i>
-                 </button>
+                 </a>
                  <button class="turnoff button button-icon" id="z-closeButton">
                      <i class="material-symbols-outlined">close</i>
                  </button>
@@ -95,6 +95,7 @@ export class ImageZoom {
         this.renderDotFiles();
         this.loaded = true;
         this.handleLoadingState();
+        this.updateDownloadLink();
     }
 
     renderMainFile() {
@@ -104,10 +105,12 @@ export class ImageZoom {
             this.zoomImg.setAttribute('src', `${url}/chats/${mainFile.media_name}`);
             this.zoomImg.style.display = 'block';
             this.zoomVideo.style.display = 'none';
+            this.zoomVideo.pause();
         } else {
-            this.zoomVideo.setAttribute('src', `${url}/${mainFile.media_name}`);
+            this.zoomVideo.setAttribute('src', `${url}/chats/${mainFile.media_name}`);
             this.zoomVideo.style.display = 'block';
             this.zoomImg.style.display = 'none';
+            this.zoomVideo.currentTime = '0';
         }
     }
 
@@ -122,9 +125,9 @@ export class ImageZoom {
         this.zoomDotWrapper.querySelectorAll('.zoom-dot-inner').forEach((dotInner, i) => {
             dotInner.addEventListener('click', () => {
                 this.active = i;
-                //this.renderDotFiles();
                 this.renderMainFile();
                 this.updateDotFiles();
+                this.updateDownloadLink();
             })
         });
         const activatedEl = this.zoomDotWrapper.children.item(this.active);
@@ -146,8 +149,7 @@ export class ImageZoom {
             return `<img src="${url}/chats/${media_name}" class="zoom-dot-image">`;
         } else if (media_type === 2) {
             return `
-            <i class="material-symbols-outlined chat-preview-play-icon chat-zoom-play-icon">play_circle</i>
-            <video src="${url}/chats/${media_name}" width="100" height="75" class="message-zoom-img"></video>`
+            <video src="${url}/chats/${media_name}" class="chat-zoom-video"></video>`
         }
     }
 
@@ -171,7 +173,7 @@ export class ImageZoom {
         this.closeButton.addEventListener("click", () => {
             this.close$.dispatchEvent(new CustomEvent('closed'));
         })
-
+        /*
         this.downloadButton.addEventListener('click', () => {
             const fileName = this.dotFiles[this.active].media_name;
             this.httpService.getDownloadedFile(`${fileName}`)
@@ -187,6 +189,7 @@ export class ImageZoom {
                 window.URL.revokeObjectURL(downloadUrl);
             })
         })
+        */
 
         this.leftButton.addEventListener('click', () => {
             if (this.active > 0) {
@@ -194,6 +197,7 @@ export class ImageZoom {
                 //this.renderDotFiles();
                 this.updateDotFiles();
                 this.renderMainFile();
+                this.updateDownloadLink();
             }
         })
 
@@ -204,11 +208,17 @@ export class ImageZoom {
                 //this.renderDotFiles();
                 this.updateDotFiles();
                 this.renderMainFile();
-
+                this.updateDownloadLink();
             }
         })
 
+    }
 
+    updateDownloadLink() {
+        const media_name = this.dotFiles[this.active].media_name;
+        this.downloadButton.setAttribute('href', `/files/chats/${media_name}`);
+        console.log(this.active);
+        console.log(this.dotFiles);
     }
 
     mouseEnter(e) {

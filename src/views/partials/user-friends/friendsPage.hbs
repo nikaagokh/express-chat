@@ -1,0 +1,26 @@
+<div class="content-container">
+    {{#notEmpty friends}}
+    <h2>მეგობრები</h2>
+    <div class="list" id="friendsList">
+        {{#each friends as |friend i|}}
+        <div class="list-item list-divider" data-user-id="{{friend.user_id}}" data-user-name="{{friend.user_name}}">
+            <img src="/files/users/{{friend.image}}" class="list-item-avatar">
+            <span class="list-item-content">
+                <h4 class="list-item-title">{{friend.full_name}}</h4>
+                <p class="list-item-line">{{friend.date}} ~ დღემდე</p>
+            </span>
+            <button class="button button-icon" data-tooltip="მეტის ნახვა">
+                <i class="material-symbols-outlined">more_horiz</i>
+            </button>
+        </div>
+        {{/each}}
+    </div>
+    {{else}}
+    <div class="empty-list-wrapper">
+        <img src="/public/images/empty.webp" width="300" height="300">
+        <div class="empty-search-suggestion">
+            <h3>მეგობრების სია ცარიელია ! </h3>
+        </div>
+    </div>
+    {{/notEmpty}}
+</div>

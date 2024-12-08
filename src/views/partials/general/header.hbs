@@ -27,12 +27,15 @@
                 <div class="toggle-container">
                     <input type="checkbox" class="toggle-input" id="toggle0" {{isChecked mode}}>
                     <label class="toggle-label-header toggle-label-animated" for="toggle0">
-                        <span class="toggle-span toggle-span-animated" style="left: {{#compare mode '===' 'light'}}1px{{else}}27px{{/compare}};"></span>
-                        <i class="material-symbols-outlined {{#compare mode '===' 'light'}}toggle-first-activated{{/compare}}">sunny</i>
-                        <i class="material-symbols-outlined {{#compare mode '===' 'dark'}}toggle-second-activated{{/compare}}">dark_mode</i>
+                        <span class="toggle-span toggle-span-animated"
+                            style="left: {{#compare mode '===' 'light'}}1px{{else}}27px{{/compare}};"></span>
+                        <i
+                            class="material-symbols-outlined {{#compare mode '===' 'light'}}toggle-first-activated{{/compare}}">sunny</i>
+                        <i
+                            class="material-symbols-outlined {{#compare mode '===' 'dark'}}toggle-second-activated{{/compare}}">dark_mode</i>
                     </label>
                 </div>
-                
+
             </div>
         </div>
     </div>

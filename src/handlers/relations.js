@@ -4,6 +4,7 @@ import { UserConversation } from "../model/user-conversations.model.js";
 import { UserRelation } from "../model/user-relations.model.js";
 import { getFormatedDate, getFormatedTime } from "../utils/helper.js";
 import { deleteRow, getMany, getOne, insertRow, updateRow } from "../utils/index.js";
+import { getStatusByConversationId } from "./chat.js";
 
 
 export const relationsSendRequests = async (p_user_id) => {
@@ -39,8 +40,9 @@ export const relationsContactUsers = async (p_user_id) => {
         user.date = getFormatedDate(user.updated_at);
         user.time = getFormatedTime(user.updated_at);
         const initConversation = await getOne('select * from init_conversation where (from_id = ? AND to_id = ?) OR (from_id = ? AND to_id = ?);', [p_user_id, user_id, user_id, p_user_id]);
-        console.log(initConversation);
-        user.conversation_id = initConversation.conversation_id;
+        const conversation_id = initConversation.conversation_id;
+        user.conversation_id = conversation_id;
+        user.online = getStatusByConversationId(conversation_id);
     }
     return users;
 }
@@ -64,7 +66,7 @@ export const relationsAddRelation = async (p_from_id, p_to_id, p_relation_status
     if (relation) {
         if (p_relation_status === 0) {
             deleteFriendship(p_from_id, p_to_id);
-        } else if (relation_status === 3) {
+        } else if (p_relation_status === 3) {
             updateBlockUser(p_from_id, p_to_id);
         }
     } else {
@@ -240,7 +242,10 @@ const addCoupleConversation = async (p_from_id, p_to_id) => {
     await insertRow('user_conversation', userConversation2);
 }
 
-const userInFriendship = async (p_from_id, p_to_id) => {
+export const userInFriendship = async (p_from_id, p_to_id) => {
+    if(p_from_id === p_to_id) {
+        return false;
+    }
     const sql = `SELECT * FROM user_relations where (from_id = ? and to_id = ?) OR (from_id = ? and to_id = ?)`;
     const relation = await getOne(sql, [p_from_id, p_to_id, p_to_id, p_from_id]);
     return relation;

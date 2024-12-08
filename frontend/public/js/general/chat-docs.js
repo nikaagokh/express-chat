@@ -63,6 +63,7 @@ export class ChatDocs {
             })
         })
         */
+       /*
        const downloadButtons = this.element.querySelectorAll('.chat-file-download');
        downloadButtons.forEach((downloadButton, i) => {
            downloadButton.addEventListener('click', () => {
@@ -82,7 +83,7 @@ export class ChatDocs {
                 })
            })
        })
-
+        */
         this.closeButton.addEventListener('click', () => {
             this.close$.dispatchEvent(new CustomEvent('closed'));
         })
@@ -113,9 +114,9 @@ export class ChatDocs {
                 <h4 class="list-item-title">${doc.media_name}</h4>
                 <p class="list-item-line">${(doc.media_size / 1024).toFixed(2) } kb</p>
             </span>
-            <button class="button button-icon chat-file-download" data-id="${doc.file_id}">
+            <a class="button button-icon chat-file-download" data-id="${doc.file_id}" href="/files/chats/${doc.media_name}" download>
                 <i class="material-symbols-outlined">download</i>
-            </button>
+            </a>
         </div>
         `).join('');
         this.docsContainer.innerHTML = template;

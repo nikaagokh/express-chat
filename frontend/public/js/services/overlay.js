@@ -391,6 +391,8 @@ class OverlayService {
 
     openFriendsMenu(listItem, userId, userName) {
         console.log(this.friendsMenuOverlay);
+        console.log(listItem);
+        console.log(userId);
         if(!this.friendsMenuOverlay) {
             this.friendsMenuOverlay = new FriendsMenu(userId, userName);
             listItem.appendChild(this.friendsMenuOverlay.element);

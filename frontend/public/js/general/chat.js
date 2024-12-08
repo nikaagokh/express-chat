@@ -14,8 +14,8 @@ export class Chat {
     this.userFullName = userFullName
     this.userId = userId;
     this.userName = userName;
-    console.log(this.userName)
     this.sendMessageHandler = this.sendMessageHandler.bind(this);
+    this.enterHandler = this.enterHandler.bind(this);
     this.close$ = document.createElement('div');
     this.loaded = false;
     this.firstOpen = true;
@@ -49,6 +49,7 @@ export class Chat {
     this.chatObject = await this.httpService.getChatMessages(this.conversationId, this.userId);
     this.messages = this.chatObject.messagesDate;
     this.online = this.chatObject.online;
+    console.log(this.chatObject);
     this.loaded = true;
     this.updateChatStatus();
     this.handleLoadingState();
@@ -84,16 +85,16 @@ export class Chat {
              </div>
          </div>
         `: `${message.medias && message.message_type === 2 ? message.medias.map(file => `
-         <div class="message-wrapper message-image-wrapper chat-img-sent">
-          <div class="chat-img-wrapper justify-end">
-            ${this.createFileTemplate(file)}
+         <div class="message-wrapper message-image-wrapper ${message.sent ? 'chat-img-sent' : 'chat-img-receive'}">
+          <div class="chat-img-wrapper ${message.sent ? 'justify-end' : 'justify-start'}">
+            ${this.createFileTemplate(file, message)}
           </div>
         </div>
       `).join('') : ''}
        `}
         `).join('')}
       `).join('');
-   
+
     this.messagesContainer.innerHTML = template;
     this.messagesContainer.querySelectorAll('.message-img').forEach(messageImg => {
       messageImg.addEventListener('click', (ev) => {
@@ -107,6 +108,7 @@ export class Chat {
   handleLoadingState() { }
 
   listeners() {
+    document.addEventListener('keydown', this.enterHandler);
     this.closeButton.addEventListener('click', () => {
       this.detach();
     })
@@ -145,7 +147,14 @@ export class Chat {
       if (conversationId === this.conversationId) {
         this.updateChatStatus()
       }
-    })
+    });
+
+    this.socketService.socket.on('onMessage', (message) => {
+      this.messages[this.messages.length - 1].messages.push(message);
+      this.renderMessages();
+      this.clearInput();
+      this.scrollBottom();
+    });
   }
 
   clearInput() {
@@ -231,7 +240,7 @@ export class Chat {
   generateImageTemplate(file) {
     return `
             <img src="${URL.createObjectURL(file)}" width="150" height="100" class="message-img">
-            <button class="button button-icon chat-download-meta left0" data-name="${file.name}">
+            <button class="button button-icon chat-download-meta left0" data-name=${file.name}>
                 <i class="material-symbols-outlined">download</i>
             </button>
     `;
@@ -249,7 +258,7 @@ export class Chat {
   generateGenericTemplate(file) {
     return `
     <div class="chat-file-append">
-        <i class="material-symbols-outlined chat-icon">description</i>
+        <i class="material-symbols-outlined chat-send-icon">description</i>
         <span>${file.name}</span>
         <button class="button button-icon chat-download-meta left0" data-name="${file.name}">
           <i class="material-symbols-outlined">download</i>
@@ -357,6 +366,12 @@ export class Chat {
     this.renderFilesPreview();
   }
 
+  enterHandler(ev) {
+    if(ev.key === 'Enter') {
+      this.sendMessageHandler();
+    }
+  }
+
   _createElement() {
     const template = `
               <div class="chat-container" id="main-container">
@@ -424,45 +439,46 @@ export class Chat {
     return tempContainer.firstElementChild;
   };
 
-  createFileTemplate(file) {
+  createFileTemplate(file, message) {
     let fileElement;
     if (file.media_type === 1) {
-      fileElement = this.createImageTemplate(file);
+      fileElement = this.createImageTemplate(file, message);
     } else if (file.media_type === 2) {
-      fileElement = this.createVideoTemplate(file);
+      fileElement = this.createVideoTemplate(file, message);
     } else {
-      fileElement = this.createGenericTemplate(file);
+      fileElement = this.createGenericTemplate(file, message);
     }
 
     return fileElement;
   }
 
-  createImageTemplate(file) {
+  createImageTemplate(file, message) {
     return `
     <img src="/files/chats/${file.media_name}" alt="photo" width="150" height="100" class="message-img" style="cursor:zoom-in;">
-    <button class="button button-icon chat-download-meta left0" data-path="${file.path}">
+    <a class="button button-icon chat-download-meta ${message.sent ? 'left0' : 'right0'}" href="/files/chats/${file.media_name}" download>
         <i class="material-symbols-outlined">download</i>
-    </button>
+    </a>
     `;
   }
 
-  createVideoTemplate(file) {
+  createVideoTemplate(file, message) {
     return `
     <video src="/files/chats/${file.media_name}" width="150" height="150" controls class="message-video"></video>
-    <button class="button button-icon chat-download-meta left0" data-path="${file.path}">
+    <a class="button button-icon chat-download-meta ${message.sent ? 'left0' : 'right0'}" href="/files/chats/${file.media_name}" download>
         <i class="material-symbols-outlined">download</i>
-    </button>
+    </a>
     `;
   }
 
-  createGenericTemplate(file) {
+  createGenericTemplate(file, message) {
+    console.log(file);
     return `
-    <div class="chat-file-append message-file">
-        <i class="material-symbols-outlined chat-icon">description</i>
+    <div class="chat-file-append message-file ${message.sent ? 'chat-file-send' : 'chat-file-receive'}">
+        <i class="material-symbols-outlined ${message.sent ? 'chat-send-icon' : 'chat-receive-icon'}">description</i>
         <span class="chat-file-content">${file.media_name}</span>
-        <button class="button button-icon chat-download-meta left0" data-path="${file.media_name}">
+        <a class="button button-icon chat-download-meta ${message.sent ? 'left0' : 'right0'}" href="/files/chats/${file.media_name}" download>
           <i class="material-symbols-outlined">download</i>
-        </button>
+        </a>
     </div>
 `;
   }

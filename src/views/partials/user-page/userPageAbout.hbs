@@ -1,0 +1,104 @@
+<div class="user-info-wrapper" data-user-id="{{user.user_id}}" data-conversation-id="{{user.conversation_id}}"
+    data-myself="{{user.myself}}" data-user-fullname="{{user.full_name}}" data-user-name="{{user.user_name}}">
+    <div class="user-info-header">
+        <h2>
+            {{#compare user.myself '==' 1}}ჩემი ანგარიში {{else}}მომხმარებლის ანგარიში{{/compare}}
+        </h2>
+    </div>
+    <div class="user-info-img-wrapper">
+        <img src="/files/users/{{user.image}}" class="user-info-img" width="50" height="50">
+    </div>
+    <div class="input-wrapper">
+        <input type="text" class="input-self" autocomplete="off" value="{{user.first_name}}" disabled>
+        <label class="input-floating" style="display: block;">სახელი</label>
+        <div class="input-meta-left">
+            <i class="material-symbols-outlined">person</i>
+        </div>
+    </div>
+
+
+    <div class="input-wrapper">
+        <input type="text" class="input-self" autocomplete="off" value="{{user.last_name}}" disabled>
+        <label class="input-floating" style="display: block;">გვარი</label>
+        <div class="input-meta-left">
+            <i class="material-symbols-outlined">person</i>
+        </div>
+    </div>
+
+    <div class="input-wrapper">
+        <input type="text" class="input-self" autocomplete="off" value="{{user.user_name}}" disabled>
+        <label class="input-floating" style="display: block;">მომხმარებელი</label>
+        <div class="input-meta-left">
+            <i class="material-symbols-outlined">person</i>
+        </div>
+    </div>
+
+
+    {{#compare user.myself '==' 0}}
+    <div class="user-info-input-wrapper">
+        <div class="input-wrapper">
+            <input type="text" class="input-self" autocomplete="off"
+                value="{{#compare user.friendship '==' 0}}უცნობი{{else}}მეგობარი{{/compare}}" disabled>
+            <label class="input-floating" style="display: block;">სტატუსი</label>
+            <div class="input-meta-left">
+                <i class="material-symbols-outlined">person</i>
+            </div>
+        </div>
+    </div>
+    <button class="button user-info-action" id="userInfoAdd"
+        style="display:{{#compare user.friendship '==' 0}}flex{{else}}none{{/compare}}">
+        <i class="material-symbols-outlined icon-white">person_add</i>
+        <span>მეგობრობის გაგზავნა</span>
+    </button>
+    <button class="button user-info-action" id="userInfoChat"
+        style="display:{{#compare user.friendship '==' 1}}flex{{else}}none{{/compare}}">
+        <i class="material-symbols-outlined icon-white">chat</i>
+        <span>მიმოწერის დაწყება</span>
+    </button>
+    <button class="button user-info-action user-info-slate" id="userInfoRemove"
+        style="display:{{#compare user.friendship '==' 1}}flex{{else}}none{{/compare}}">
+        <i class="material-symbols-outlined icon-white">person_remove</i>
+        <span>მეგობრებიდან წაშლა</span>
+    </button>
+    <button class="button user-info-action user-info-brick" id="userInfoBlock"
+        style="display:flex;">
+        <i class="material-symbols-outlined icon-white">block</i>
+        <span>დაბლოკვა</span>
+    </button>
+    <div class="user-info-divider"></div>
+    <div class="myinfo-list">
+        <a class="button myinfo-button {{pathActive pathname 'friends'}}" href="/friends/{{user.user_name}}">
+            <i class="material-symbols-outlined">group</i>
+            <span>მეგობრები</span>
+        </a>
+        <a class="button myinfo-button {{pathActive pathname 'shares'}}" href="/shares/{{user.user_name}}">
+            <i class="material-symbols-outlined">share</i>
+            <span>გაზიარებები</span>
+        </a>
+    </div>
+    {{else}}
+    <div class="user-info-divider"></div>
+    <div class="myinfo-list">
+        <a class="button myinfo-button {{pathActive pathname 'friends'}}" href="/friends/{{user.user_name}}">
+            <i class="material-symbols-outlined">group</i>
+            <span>მეგობრები</span>
+        </a>
+        <a class="button myinfo-button {{pathActive pathname 'shares'}}" href="/shares/{{user.user_name}}">
+            <i class="material-symbols-outlined">share</i>
+            <span>გაზიარებები</span>
+        </a>
+        <a class="button myinfo-button {{pathActive pathname 'outgoing-requests'}}" href="/outgoing-requests/{{user.user_name}}">
+            <i class="material-symbols-outlined">outbox</i>
+            <span>მეგობრობის გაგზავნები</span>
+        </a>
+        <a class="button myinfo-button {{pathActive pathname 'ingoing-requests'}}" href="/ingoing-requests/{{user.user_name}}">
+            <i class="material-symbols-outlined">move_to_inbox</i>
+            <span>მეგობრობის თხოვნები</span>
+        </a>
+        <a class="button myinfo-button {{pathActive pathname 'blocks'}}" href="/blocks/{{user.user_name}}">
+            <i class="material-symbols-outlined">block</i>
+            <span>დაბლოკილები</span>
+        </a>
+    </div>
+    {{/compare}}
+</div>

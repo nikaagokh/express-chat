@@ -36,6 +36,9 @@ class Home {
                 const likeSpan = likeButton.nextElementSibling;
                 let likeCount = Number(likeSpan.textContent);
                 const postCard = likeButton.closest('.post-card');
+                const unlikeButton = postCard.querySelector('.post-card-unlike');
+                const unlikeIcon = unlikeButton.querySelector('i');
+                const unlikeSpan = unlikeButton.nextElementSibling;
                 const postId = Number(postCard.getAttribute('data-post-id'));
                 this.httpService.manageLike(postId)
                     .then(response => {
@@ -44,10 +47,22 @@ class Home {
                             likeCount++;
                             likeSpan.textContent = likeCount;
                             likeIcon.style.fontVariationSettings = "'FILL' 1, 'wght' 100, 'GRAD' 200, 'opsz' 24";
+                            likeButton.setAttribute('liked', '1');
+                            let unliked = unlikeButton.getAttribute('unliked');
+                            if (unliked) {
+                                let unLikeCount = Number(unliked);
+                                if (unLikeCount > 0) {
+                                    unLikeCount--;
+                                    unlikeIcon.style.fontVariationSettings = "'FILL' 0, 'wght' 100, 'GRAD' 200, 'opsz' 24";
+                                    unlikeSpan.textContent = unLikeCount;
+                                    unlikeButton.setAttribute('unliked', '0');
+                                }
+                            }
                         } else {
                             likeCount--;
                             likeSpan.textContent = likeCount;
                             likeIcon.style.fontVariationSettings = "'FILL' 0, 'wght' 100, 'GRAD' 200, 'opsz' 24";
+                            likeButton.setAttribute('liked', '0');
                         }
                     })
             })
@@ -55,22 +70,38 @@ class Home {
 
         this.unlikeButtons.forEach(unlikeButton => {
             unlikeButton.addEventListener('click', () => {
-                const likeIcon = unlikeButton.querySelector('i');
+                const unlikeIcon = unlikeButton.querySelector('i');
                 const unlikeSpan = unlikeButton.nextElementSibling;
                 let unlikeCount = Number(unlikeSpan.textContent);
                 const postCard = unlikeButton.closest('.post-card');
+                const likeButton = postCard.querySelector('.post-card-unlike');
+                const likeIcon = unlikeButton.querySelector('i');
+                const likeSpan = unlikeButton.nextElementSibling;
                 const postId = Number(postCard.getAttribute('data-post-id'));
                 this.httpService.manageUnLike(postId)
                     .then(response => {
                         const unlike = response.unlike;
+                        console.log(unlike)
                         if (unlike) {
                             unlikeCount++;
                             unlikeSpan.textContent = unlikeCount;
-                            likeIcon.style.fontVariationSettings = "'FILL' 1, 'wght' 100, 'GRAD' 200, 'opsz' 24";
+                            unlikeIcon.style.fontVariationSettings = "'FILL' 1, 'wght' 100, 'GRAD' 200, 'opsz' 24";
+                            unlikeButton.setAttribute('unliked', '1');
+                            let liked = likeButton.getAttribute('liked');
+                            if (liked) {
+                                let LikeCount = Number(liked);
+                                if (LikeCount > 0) {
+                                    LikeCount--;
+                                    likeIcon.style.fontVariationSettings = "'FILL' 0, 'wght' 100, 'GRAD' 200, 'opsz' 24";
+                                    likeSpan.textContent = LikeCount;
+                                    likeButton.setAttribute('liked', '0');
+                                }
+                            }
                         } else {
                             unlikeCount--;
                             unlikeSpan.textContent = unlikeCount;
-                            likeIcon.style.fontVariationSettings = "'FILL' 0, 'wght' 100, 'GRAD' 200, 'opsz' 24";
+                            unlikeIcon.style.fontVariationSettings = "'FILL' 0, 'wght' 100, 'GRAD' 200, 'opsz' 24";
+                            unlikeButton.setAttribute('unliked', '0');
                         }
                     })
             })
@@ -96,9 +127,9 @@ class Home {
             commentAddButton.addEventListener('click', () => {
                 const content = input.value;
                 this.httpService.addComment(postId, content)
-                .then(_ => {
-                    this.toastService.createSuccessToast('თქვენი კომენტარი წარმატებით დაემატა');
-                })
+                    .then(_ => {
+                        this.toastService.createSuccessToast('თქვენი კომენტარი წარმატებით დაემატა');
+                    })
             })
         })
 

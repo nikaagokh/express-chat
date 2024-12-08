@@ -1,6 +1,8 @@
+import { Header } from '../general/header.js';
 import { initListeners } from '../listeners/index.js';
 import overlayService from '../services/overlay.js';
-class Friends {
+import { initSocket } from '../socket/socket.js';
+export class Friends {
     constructor() {
         this.overlayService = overlayService;
         this.friendsList = document.querySelector('#friendsList');
@@ -23,8 +25,10 @@ class Friends {
 }
 
 function init() {
-    new Friends();
     initListeners();
+    initSocket();
+    new Friends();
+    new Header();
 }
 
 document.addEventListener('DOMContentLoaded', init);

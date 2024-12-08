@@ -1,3 +1,4 @@
+import { Header } from "../general/header.js";
 import { initListeners } from "../listeners/index.js";
 import httpService from "../services/http.js";
 class Blocks {
@@ -28,6 +29,7 @@ class Blocks {
 function init() {
     initListeners();
     new Blocks();
+    new Header();
 }
 
 document.addEventListener('DOMContentLoaded', init);

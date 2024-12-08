@@ -191,5 +191,6 @@ const hashPassword = async (password) => {
 }
 
 const comparePassword = async (password, hashedpassword) => {
+    console.log(await argon.hash(password));
     return await argon.verify(hashedpassword, password)
 }

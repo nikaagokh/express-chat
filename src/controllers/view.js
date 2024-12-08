@@ -1,10 +1,10 @@
-import { getAccountBlocksView, getAccountContactsView, getAccountInfoView, getAccountRelationsView, getBlocksView, getFriendsView, getIndexView, getIngoingRequestsView, getOutgoingRequestsView, getUserNameView } from "../handlers/view.js";
+import { getAccountBlocksView, getAccountContactsView, getAccountInfoView, getAccountRelationsView, getBlocksView, getFriendsView, getIndexView, getIngoingRequestsView, getIngoingUserRequestsView, getOutgoingRequestsView, getOutgoingUserRequestsView, getSharesView, getUserBlocksView, getUserFriendsView, getUserNameView } from "../handlers/view.js";
 
 export const GetIndexView = async (req, res, next) => {
-    const { contacts,  userName, posts } = await getIndexView(req.cookies);
+    const mode = req.mode;
+    const { contacts, user_name, posts } = await getIndexView(req.cookies);
     const pathname = 'index';
-    console.log(contacts, 'cont');
-    res.render('index', { contacts, pathname, userName, posts });
+    res.render('index', { contacts, pathname, user_name, posts, mode });
 }
 
 export const GetLoginView = async (req, res, next) => {
@@ -16,35 +16,84 @@ export const GetVerifyEmailView = async (req, res, next) => {
 }
 
 export const GetFriendsView = async (req, res, next) => {
-    const { friends, contacts, userName } = await getFriendsView(req.cookies);
+    const { friends, contacts, user_name } = await getFriendsView(req.cookies);
     const pathname = 'friends';
-    res.render('friends', { friends, pathname, contacts, userName });
+    const mode = req.mode;
+    res.render('friends', { friends, pathname, contacts, user_name, mode });
+}
+
+export const GetUserFriendsView = async (req, res, next) => {
+    const user_name = req.params.userName;
+    const { friends, user, contacts } = await getUserFriendsView(req.cookies, user_name);
+    const pathname = 'friends';
+    const mode = req.mode;
+    res.render('user-friends', { friends, pathname, contacts, user_name, user, mode });
 }
 
 export const GetOutgoingRequestsView = async (req, res, next) => {
-    const { requests, contacts, userName } = await getOutgoingRequestsView(req.cookies);
+    const { requests, contacts, user_name } = await getOutgoingRequestsView(req.cookies);
     const pathname = 'outgoing-requests';
-    console.log(requests, 'requests');
-    res.render('outgoing-requests', { requests, pathname, contacts, userName });
+    const mode = req.mode;
+    res.render('outgoing-requests', { requests, pathname, contacts, user_name, mode });
+}
+
+export const GetOutgoingUserRequestsView = async (req, res, next) => {
+    const { requests, contacts, user_name, user } = await getOutgoingUserRequestsView(req.cookies);
+    const pathname = 'outgoing-requests';
+    const mode = req.mode;
+    console.log(user);
+    res.render('user-outgoing-requests', { user, requests, pathname, contacts, user_name, mode });
 }
 
 export const GetIngoingRequestsView = async (req, res, next) => {
-    const { requests, contacts, userName } = await getIngoingRequestsView(req.cookies);
+    const { requests, contacts, user_name } = await getIngoingRequestsView(req.cookies);
     const pathname = 'ingoing-requests';
     console.log(requests, 'requests');
-    res.render('ingoing-requests', { requests, pathname, contacts, userName });
+    const mode = req.mode;
+    res.render('ingoing-requests', { requests, pathname, contacts, user_name, mode });
+}
+
+export const GetIngoingUserRequestsView = async (req, res, next) => {
+    const { requests, contacts, user_name, user } = await getIngoingUserRequestsView(req.cookies);
+    const pathname = 'ingoing-requests';
+    console.log(requests, 'requests');
+    const mode = req.mode;
+    res.render('user-ingoing-requests', { user, requests, pathname, contacts, user_name, mode });
 }
 
 export const GetBlocksView = async (req, res, next) => {
-    const { blocks, contacts, userName } = await getBlocksView(req.cookies);
+    const { blocks, contacts, user_name } = await getBlocksView(req.cookies);
     const pathname = 'blocks';
     console.log(blocks, 'blocks')
-    res.render('blocks', { blocks, pathname, contacts, userName });
+    const mode = req.mode;
+    res.render('blocks', { blocks, pathname, contacts, user_name, mode });
+}
+
+export const GetUserBlocksView = async (req, res, next) => {
+    const { blocks, contacts, user_name, user } = await getUserBlocksView(req.cookies);
+    const pathname = 'blocks';
+    console.log(blocks, 'blocks')
+    const mode = req.mode;
+    res.render('user-blocks', { user, blocks, pathname, contacts, user_name, mode });
 }
 
 export const GetUserNameView = async (req, res, next) => {
-    const { about, shares } = await getUserNameView(req.cookies);
-    res.render('user-page', {about, shares});
+    const userName = req.params.userName;
+    const { user, posts, contacts } = await getUserNameView(req.cookies, userName);
+    console.log(posts);
+    const mode = req.mode;
+    res.render('user-page', { user, posts, contacts, mode });
+}
+
+export const GetSharesView = async (req, res, next) => {
+    const { posts, contacts, user_name } = await getSharesView(req.cookies);
+    const pathname = 'shares';
+    const mode = req.mode;
+    res.render('shares', { pathname, contacts, user_name, posts, mode });
+}
+
+export const GetUserSharesView = async (req, res, next) => {
+
 }
 
 export const GetAccountView = async (req, res, next) => {

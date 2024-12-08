@@ -70,6 +70,7 @@ export const ChatInitConversation = async (req, res, next) => {
     const conversationId = req.query.conversation_id;
     const contactId = req.query.user_id;
     const response = await chatInitConversation(userId, conversationId, contactId);
+    console.log(response, 'responsea');
     res.json(response);
 }
 

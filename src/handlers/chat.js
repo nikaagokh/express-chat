@@ -1,6 +1,6 @@
 import { getOne, getMany, insertRow, updateRow } from "../utils/index.js";
 import { throwError } from "../utils/index.js";
-import { pool } from "../database/connection.js";
+import { pool } from "../database/connect.js";
 import { Message } from '../model/messages.model.js';
 import { getFormatedDate, getFormatedTime } from "../utils/helper.js";
 import { MessageMedia } from "../model/message-media.model.js";
@@ -412,7 +412,7 @@ const getCoupleConversation = async (senderId, receiverId) => {
     return { messages, conversationId };
 }
 
-const getStatusByConversationId = (conversationId) => {
+export const getStatusByConversationId = (conversationId) => {
     const conversationName = `conv-${conversationId}`;
     const sockets = gatewaySessionManager.getRoom(conversationName);
     if (sockets.size === 1 || sockets.size === 0) return false;
