@@ -62,6 +62,12 @@ export const configureHbs = () => {
         }
     })
 
+    hbs.registerHelper('footerActive', function(pathname, path) {
+        if(pathname === path) {
+            return 'footer-button-active';
+        }
+    })
+
     hbs.registerHelper('detectMode', function (mode) {
         if (mode === 'dark') {
             return 'dark';

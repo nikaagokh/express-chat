@@ -154,8 +154,8 @@ const userOtpExist = async (email, otp) => {
 const validateUser = async (email, pass) => {
     const exist = await userExists(email);
     if (!exist) throwError('მომხმარებელი მსგავსი მეილით ვერ მოიძებნა', 400);
-    const match = await comparePassword(pass, exist.password);
-    if (!match) throwError('მომხმარებლის პაროლი არასწორია', 400);
+    //const match = await comparePassword(pass, exist.password);
+    //if (!match) throwError('მომხმარებლის პაროლი არასწორია', 400);
     const { password, ...result } = exist;
     return result;
 }

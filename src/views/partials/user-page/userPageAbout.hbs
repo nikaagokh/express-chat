@@ -7,9 +7,18 @@
     </div>
     <div class="user-info-img-wrapper">
         <img src="/files/users/{{user.image}}" class="user-info-img" width="50" height="50">
+        {{#compare user.myself '==' 1}}
+        <div class="user-info-upload">
+            <label for="upload-profile-photo" class="upload-profile-photo" data-tooltip="ფოტოს დამატება">
+                <i class="material-symbols-outlined icon-basic">add</i>
+            </label>
+            <input type="file" id="upload-profile-photo" accept=".png, .jpg, .jpeg" class="upload-file" >
+        </div>
+        {{/compare}}
     </div>
     <div class="input-wrapper">
-        <input type="text" class="input-self" autocomplete="off" value="{{user.first_name}}" disabled>
+        <input type="text" class="input-self user-info-input-disabled" autocomplete="off" value="{{user.first_name}}"
+            disabled>
         <label class="input-floating" style="display: block;">სახელი</label>
         <div class="input-meta-left">
             <i class="material-symbols-outlined">person</i>
@@ -18,7 +27,8 @@
 
 
     <div class="input-wrapper">
-        <input type="text" class="input-self" autocomplete="off" value="{{user.last_name}}" disabled>
+        <input type="text" class="input-self user-info-input-disabled" autocomplete="off" value="{{user.last_name}}"
+            disabled>
         <label class="input-floating" style="display: block;">გვარი</label>
         <div class="input-meta-left">
             <i class="material-symbols-outlined">person</i>
@@ -26,7 +36,8 @@
     </div>
 
     <div class="input-wrapper">
-        <input type="text" class="input-self" autocomplete="off" value="{{user.user_name}}" disabled>
+        <input type="text" class="input-self user-info-input-disabled" autocomplete="off" value="{{user.user_name}}"
+            disabled>
         <label class="input-floating" style="display: block;">მომხმარებელი</label>
         <div class="input-meta-left">
             <i class="material-symbols-outlined">person</i>
@@ -35,14 +46,12 @@
 
 
     {{#compare user.myself '==' 0}}
-    <div class="user-info-input-wrapper">
-        <div class="input-wrapper">
-            <input type="text" class="input-self" autocomplete="off"
-                value="{{#compare user.friendship '==' 0}}უცნობი{{else}}მეგობარი{{/compare}}" disabled>
-            <label class="input-floating" style="display: block;">სტატუსი</label>
-            <div class="input-meta-left">
-                <i class="material-symbols-outlined">person</i>
-            </div>
+    <div class="input-wrapper">
+        <input type="text" class="input-self user-info-input-disabled" autocomplete="off"
+            value="{{#compare user.friendship '==' 0}}უცნობი{{else}}მეგობარი{{/compare}}" disabled>
+        <label class="input-floating" style="display: block;">სტატუსი</label>
+        <div class="input-meta-left">
+            <i class="material-symbols-outlined">person</i>
         </div>
     </div>
     <button class="button user-info-action" id="userInfoAdd"
@@ -60,8 +69,7 @@
         <i class="material-symbols-outlined icon-white">person_remove</i>
         <span>მეგობრებიდან წაშლა</span>
     </button>
-    <button class="button user-info-action user-info-brick" id="userInfoBlock"
-        style="display:flex;">
+    <button class="button user-info-action user-info-brick" id="userInfoBlock" style="display:flex;">
         <i class="material-symbols-outlined icon-white">block</i>
         <span>დაბლოკვა</span>
     </button>
@@ -87,11 +95,13 @@
             <i class="material-symbols-outlined">share</i>
             <span>გაზიარებები</span>
         </a>
-        <a class="button myinfo-button {{pathActive pathname 'outgoing-requests'}}" href="/outgoing-requests/{{user.user_name}}">
+        <a class="button myinfo-button {{pathActive pathname 'outgoing-requests'}}"
+            href="/outgoing-requests/{{user.user_name}}">
             <i class="material-symbols-outlined">outbox</i>
             <span>მეგობრობის გაგზავნები</span>
         </a>
-        <a class="button myinfo-button {{pathActive pathname 'ingoing-requests'}}" href="/ingoing-requests/{{user.user_name}}">
+        <a class="button myinfo-button {{pathActive pathname 'ingoing-requests'}}"
+            href="/ingoing-requests/{{user.user_name}}">
             <i class="material-symbols-outlined">move_to_inbox</i>
             <span>მეგობრობის თხოვნები</span>
         </a>

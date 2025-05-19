@@ -4,9 +4,10 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { configureHbs, registerPartials } from './configure-hbs.js';
 import indexRouter from './src/routes/index.js';
-import { ErrorHandler } from './src/utils/index.js'; 
+import { ErrorHandler } from './src/utils/index.js';
 import { configureIO } from './src/gateway/chat.js';
 import { authenticateFile } from './src/middlewares/authenticateFile.js';
+import cors from 'cors';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,6 +15,12 @@ export const __dirname = dirname(__filename);
 
 configureHbs();
 const app = express();
+const corsOptions = {
+    origin: 'http://localhost:4200',
+    credentials: true, 
+};
+
+app.use(cors(corsOptions));
 configureIO(app);
 
 app.use('/public', express.static(path.resolve(__dirname, "frontend", "public")));

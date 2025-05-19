@@ -1,7 +1,8 @@
 import eventEmitter from "../utils/event-emitter.js";
-import { chatCommunicationReceiver, chatConversations, chatDocsConversation, chatFiles, chatInitConversation, chatMedia, chatMessageConversation, chatMoreMessages, chatSeen, chatSendFile, chatSendMessage, chatUserConversation, checkUnseenMessages } from "../handlers/chat.js";
+import { chatCommunicationReceiver, chatConversations, chatCreateGroup, chatDocsConversation, chatFiles, chatGroups, chatInitConversation, chatInitGroup, chatMedia, chatMessageConversation, chatMoreMessages, chatSeen, chatSendFile, chatSendMessage, chatUserConversation, checkUnseenMessages } from "../handlers/chat.js";
 import path from 'path';
 import { __dirname } from '../../dirname.js';
+import e from "express";
 
 
 export const ChatSendMessage = async (req, res, next) => {
@@ -74,6 +75,13 @@ export const ChatInitConversation = async (req, res, next) => {
     res.json(response);
 }
 
+export const ChatInitGroup = async (req, res, next) => {
+    const userId = req.userId;
+    const conversationId = req.params.conversationId;
+    const response = await chatInitGroup(userId, conversationId);
+    res.json(response);
+}
+
 export const ChatCommunicationReceiver = async (req, res, next) => {
     const senderId = req.userId;
     const receiverId = Number(req.params.receiverId);
@@ -119,5 +127,19 @@ export const ChatUserConversation = async (req, res, next) => {
     const userId = req.userId;
     const conversationId = Number(req.params.conversationId);
     const response = await chatUserConversation(userId, conversationId);
+    res.json(response);
+}
+
+export const ChatGroups = async (req, res, next) => {
+    const userId = req.userId;
+    const response = await chatGroups(userId);
+    res.json(response);
+}
+
+export const ChatCreateGroup = async (req, res, next) => {
+    const adminId = req.userId;
+    const userIds = req.body.userIds;
+    const groupName = req.body.groupName;
+    const response = await chatCreateGroup(adminId, groupName, userIds);
     res.json(response);
 }

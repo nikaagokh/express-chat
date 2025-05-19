@@ -1,19 +1,21 @@
 <div class="content-container">
     {{> index/addPost}}
-    
+
     {{#each posts as |post i|}}
     <div class="post-card" data-post-id="{{post.post_id}}">
         <div class="list-item">
-            <img class="list-item-avatar" src="/public/images/users/{{post.image}}">
+            <i class="material-symbols-outlined list-item-avatar">account_circle</i>
             <span class="list-item-content">
                 <a class="list-item-title" href="/users/{{post.user_name}}">{{post.full_name}}</a>
                 <div class="list-item-line">{{getDate post.created_at}}</div>
             </span>
+            <!--
             <div class="list-item-actions">
                 <a class="button button-link button-link-active" href="/posts/{{post.post_id}}">
                     დეტალურად...
                 </a>
             </div>
+            -->
         </div>
         <div class="post-card-content">
             <p class="post-card-content-desc">{{post.content}}</p>
@@ -41,7 +43,8 @@
                 <div class="post-card-swipper-flex">
                     {{#each post.medias as |media j|}}
                     <div class="post-card-swipper-item {{#compare j '==' 0}}swipper-active{{/compare}}"
-                        data-media-type="{{media.media_type}}" data-media-name="{{media.media_name}}" data-activate-id="{{j}}">
+                        data-media-type="{{media.media_type}}" data-media-name="{{media.media_name}}"
+                        data-activate-id="{{j}}">
                         {{#compare media.media_type '==' 1}}
                         <img src="/files/posts/{{media.media_name}}" class="post-card-content-img">
                         {{else}}
@@ -72,16 +75,20 @@
             <div class="post-card-action-wrapper">
                 <div class="post-card-action-flex">
                     <button class="button button-icon post-card-like" data-tooltip="მოწონება">
-                        <i class="material-symbols-outlined icon-action" {{#if post.liked}} style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;"{{/if}}>thumb_up</i>
+                        <i class="material-symbols-outlined icon-action" {{#if post.liked}}
+                            style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;"
+                            {{/if}}>thumb_up</i>
                     </button>
                     <span class="post-card-action-number like-number">{{post.likes}}</span>
                 </div>
+                <!--
                 <div class="post-card-action-flex">
                     <button class="button button-icon post-card-unlike" data-tooltip="არმოწონება">
                         <i class="material-symbols-outlined icon-action" {{#if post.unliked}} style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;"{{/if}}>thumb_down</i>
                     </button>
                     <span class="post-card-action-number unlike-number">{{post.unlikes}}</span>
                 </div>
+                -->
                 <div class="post-card-action-flex">
                     <button class="button button-icon post-card-comment" data-tooltip="კომენტირება">
                         <i class="material-symbols-outlined icon-action">comment</i>
@@ -90,10 +97,13 @@
                 </div>
             </div>
             <div class="post-card-action-wrapper">
-                <button class="button button-icon post-card-download" data-tooltip="გადმოწერა" data-media-name="{{post.medias.[0].media_name}}">
+                <a class="button button-icon post-card-download" data-tooltip="გადმოწერა"
+                    href="/files/posts/{{post.medias.[0].media_name}}"
+                    style="display: {{#notEmpty post.medias}}flex{{else}}none{{/notEmpty}};" download>
                     <i class="material-symbols-outlined icon-action">download</i>
-                </button>
-                <button class="button button-icon post-card-share" data-tooltip="გაზიარება" data-post-id="{{post.post_id}}">
+                </a>
+                <button class="button button-icon post-card-share" data-tooltip="გაზიარება"
+                    data-post-id="{{post.post_id}}">
                     <i class="material-symbols-outlined icon-action">share</i>
                 </button>
 
@@ -103,174 +113,10 @@
             <div class="input-wrapper" id="postInputWrapper">
                 <input type="text" id="postInput" class="input-self post-card-input" placeholder="დატოვე კომენტარი...">
             </div>
-            <button class="button button-icon post-card-comment-add" data-tooltip="დაკომენტარება">
+            <button class="button button-icon post-card-comment-add" data-tooltip="დაკომენტარება" id="sendButton{{i}}">
                 <i class="material-symbols-outlined">send</i>
             </button>
         </div>
     </div>
     {{/each}}
-    <!--
-    <div class="post-card" data-post-id="1">
-        <div class="list-item">
-            <img class="list-item-avatar" src="/public/images/users/user.png">
-            <span class="list-item-content">
-                <h4 class="list-item-title">გელა გნოლიძე</h4>
-                <div class="list-item-line">26წთ</div>
-            </span>
-            <div class="list-item-actions">
-                <a class="button button-link button-link-active" href="/posts/33">
-                    დეტალურად...
-                </a>
-            </div>
-        </div>
-        <div class="post-card-content">
-            <p class="post-card-content-desc">ეს პოსტი დაწერილია რამდენიმე დღის წინ რათა ეს მომხდარიყო</p>
-            <div class="post-card-content-inner">
-                <img src="/public/images/users/empty.webp" class="post-card-content-img">
-            </div>
-            <div class="post-card-swipper-body">
-                <div class="post-card-swipper-flex">
-                    <div class="post-card-swipper-item swipper-active"></div>
-                    <div class="post-card-swipper-item"></div>
-                    <div class="post-card-swipper-item"></div>
-                    <div class="post-card-swipper-item"></div>
-                </div>
-                <button class="button button-icon post-card-swipper-left">
-                    <i class="material-symbols-outlined">chevron_left</i>
-                </button>
-                <button class="button button-icon post-card-swipper-right">
-                    <i class="material-symbols-outlined">chevron_left</i>
-                </button>
-            </div>
-        </div>
-        <div class="post-card-actions">
-            <div class="post-card-action-wrapper">
-                <div class="post-card-action-flex">
-                    <button class="button button-icon post-card-like" data-tooltip="მოწონება">
-                        <i class="material-symbols-outlined icon-action">thumb_up</i>
-                    </button>
-                    <span class="post-card-action-number like-number">7</span>
-                </div>
-                <div class="post-card-action-flex">
-                    <button class="button button-icon post-card-unlike" data-tooltip="არმოწონება">
-                        <i class="material-symbols-outlined icon-action">thumb_down</i>
-                    </button>
-                    <span class="post-card-action-number unlike-number">3</span>
-                </div>
-                <div class="post-card-action-flex">
-                    <button class="button button-icon post-card-comment" data-tooltip="კომენტირება">
-                        <i class="material-symbols-outlined icon-action">comment</i>
-                    </button>
-                    <span class="post-card-action-number comment-number">5</span>
-                </div>
-            </div>
-            <button class="button button-icon post-card-share" data-tooltip="გაზიარება">
-                <i class="material-symbols-outlined icon-action">share</i>
-            </button>
-        </div>
-        <div class="post-card-add-comment" style="display: none;">
-            <div class="input-wrapper" id="postInputWrapper">
-                <input type="text" id="postInput" class="input-self post-card-input" placeholder="დატოვე კომენტარი...">
-            </div>
-            <button class="button button-icon" data-tooltip="დაკომენტარება">
-                <i class="material-symbols-outlined">send</i>
-            </button>
-        </div>
-    </div>
-    <div class="post-card" data-post-id="2">
-        <div class="list-item">
-            <img class="list-item-avatar" src="/public/images/users/user.png">
-            <span class="list-item-content">
-                <h4 class="list-item-title">გელა გნოლიძე</h4>
-                <div class="list-item-line">26წთ</div>
-            </span>
-            <div class="list-item-actions">
-                <button class="button button-icon">
-                    <i class="material-symbols-outlined icon-basic">close</i>
-                </button>
-            </div>
-        </div>
-        <div class="post-card-content">
-            <p class="post-card-content-desc">ეს პოსტი დაწერილია რამდენიმე დღის წინ რათა ეს მომხდარიყო</p>
-            <div class="post-card-content-inner">
-                <video width="100%" controls>
-                    <source src="/public/videos/shin.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-        </div>
-        <div class="post-card-actions">
-            <div class="post-card-action-wrapper">
-                <button class="button button-icon post-card-like" data-tooltip="მოწონება">
-                    <i class="material-symbols-outlined icon-action">thumb_up</i>
-                </button>
-                <button class="button button-icon post-card-unlike" data-tooltip="არმოწონება">
-                    <i class="material-symbols-outlined icon-action">thumb_down</i>
-                </button>
-                <button class="button button-icon post-card-comment" data-tooltip="კომენტირება">
-                    <i class="material-symbols-outlined icon-action">comment</i>
-                </button>
-            </div>
-            <button class="button button-icon post-card-share" data-tooltip="გაზიარება">
-                <i class="material-symbols-outlined icon-action">share</i>
-            </button>
-        </div>
-        <div class="post-card-add-comment" style="display: none;">
-            <div class="input-wrapper" id="postInputWrapper">
-                <input type="text" id="postInput" class="input-self post-card-input" placeholder="დატოვე კომენტარი...">
-            </div>
-            <button class="button button-icon" data-tooltip="დაკომენტარება">
-                <i class="material-symbols-outlined">send</i>
-            </button>
-        </div>
-    </div>
-    <div class="post-card" data-post-id="3">
-        <div class="list-item">
-            <img class="list-item-avatar" src="/public/images/users/user.png">
-            <span class="list-item-content">
-                <h4 class="list-item-title">გელა გნოლიძე</h4>
-                <div class="list-item-line">26წთ</div>
-            </span>
-            <div class="list-item-actions">
-                <button class="button button-icon">
-                    <i class="material-symbols-outlined icon-basic">close</i>
-                </button>
-            </div>
-        </div>
-        <div class="post-card-content">
-            <p class="post-card-content-desc">ეს პოსტი დაწერილია რამდენიმე დღის წინ რათა ეს მომხდარიყო</p>
-            <div class="post-card-content-inner">
-                <img src="/public/images/file.png" class="post-card-content-img" style="width: 80px; height:40px;">
-                <div class="post-card-content-file">სახელი გვარdwaaaaaaaaaaarsი.docx</div>
-                <button class="button button-icon post-card-download">
-                    <i class="material-symbols-outlined">download</i>
-                </button>
-            </div>
-        </div>
-        <div class="post-card-actions">
-            <div class="post-card-action-wrapper">
-                <button class="button button-icon post-card-like" data-tooltip="მოწონება">
-                    <i class="material-symbols-outlined icon-action">thumb_up</i>
-                </button>
-                <button class="button button-icon post-card-unlike" data-tooltip="არმოწონება">
-                    <i class="material-symbols-outlined icon-action">thumb_down</i>
-                </button>
-                <button class="button button-icon post-card-comment" data-tooltip="კომენტირება">
-                    <i class="material-symbols-outlined icon-action">comment</i>
-                </button>
-            </div>
-            <button class="button button-icon post-card-share" data-tooltip="გაზიარება">
-                <i class="material-symbols-outlined icon-action">share</i>
-            </button>
-        </div>
-        <div class="post-card-add-comment" style="display: none;">
-            <div class="input-wrapper" id="postInputWrapper">
-                <input type="text" id="postInput" class="input-self post-card-input" placeholder="დატოვე კომენტარი...">
-            </div>
-            <button class="button button-icon" data-tooltip="დაკომენტარება">
-                <i class="material-symbols-outlined">send</i>
-            </button>
-        </div>
-    </div>
-    -->
 </div>

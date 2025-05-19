@@ -1,13 +1,17 @@
 import httpService from "../services/http.js";
-
+import toastService from "../services/toast.js";
 export class AddGroup {
     constructor() {
         this.httpService = httpService;
+        this.toastService = toastService;
         this.loaded = false;
         this.activeSelect = null;
+        this.userIds = [];
         this.handleOutsideClick = this.handleOutsideClick.bind(this);
         this.close$ = document.createElement('div');
         this.element = this._createElement();
+        this.groupInput = this.element.querySelector('#groupInput');
+        this.submitButton = this.element.querySelector('#submitButton');
         this.closeButton = this.element.querySelector('#closeButton');
         this.modalBody = this.element.querySelector('.modal-body');
         this.modalContent = this.element.querySelector('.modal-content');
@@ -29,9 +33,20 @@ export class AddGroup {
             this.close$.dispatchEvent(new CustomEvent('closed'));
         });
 
+        this.submitButton.addEventListener('click', () => {
+            const groupName = this.groupInput.value;
+            if(this.userIds.length > 0 && groupName.length > 0) {
+                this.httpService.createGroupChat(groupName, this.userIds)
+                .then(conversation => {
+                    console.log(conversation);
+                    this.toastService.createSuccessToast('თქვენს მიერ ჩათი წარმატებით შეიქმნა');
+                }).catch(_ => {
+                    this.toastService.createDangerToast('ჩათი მსგავსი სახელით უკვე არსებობს');
+                })
+            }
+        })
 
         this.addGroupForm.button.addEventListener('click', () => {
-            console.log('ae')
             if (!this.activeSelect) {
                 this.addGroupForm.isOpen = true;
                 this.activeSelect = this.addGroupForm;
@@ -44,7 +59,7 @@ export class AddGroup {
         })
 
         this.addGroupForm.valueChanges.addEventListener('changed', (ev) => {
-            console.log(ev);
+            this.userIds = ev.detail;
         })
     }
 
@@ -99,10 +114,10 @@ export class AddGroup {
                          </button>
                          <ul role="listbox" class="select-dropdown" id="addGroupList" aria-multiselectable="true"></ul>
                       </div>
-                     <div class="input-wrapper" id="contactsInputWrapper">
-                        <input type="text" id="contactsInput" class="input-self contacts-input" placeholder="ჯგუფის სახელი" style="padding-left:0.5rem;">
+                     <div class="input-wrapper" id="groupInputWrapper">
+                        <input type="text" id="groupInput" class="input-self contacts-input" placeholder="ჯგუფის სახელი" style="padding-left:0.5rem;">
                      </div> 
-                     <button class="button modal-button">ჯგუფის შექმნა</button>
+                     <button class="button modal-button" id="submitButton">ჯგუფის შექმნა</button>
                    </div>
                    <div class="spinner-container">
                      <svg class="spinner" width="35px" height="35px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
@@ -150,7 +165,7 @@ export class AddGroup {
                 Array.from(this.activeSelect.dropdown.children).forEach(li => {
                     if (li.classList.contains('active')) {
                         selectedValues.push(li.querySelector('.list-item-content').textContent);
-                        selectedRefs.push(Number(li.getAttribute("value")));
+                        selectedRefs.push(Number(li.getAttribute("data-user-id")));
                     }
                 })
                 if (selectedValues.length !== 0) {

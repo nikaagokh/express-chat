@@ -3,6 +3,7 @@ export class YouSure {
         this.text = text;
         this.accept = accept;
         this.decline = decline;
+        this.enterHandler = this.enterHandler.bind(this);
         this.element = this._createElement();
         this.accept$ = document.createElement('div');
         this.decline$ = document.createElement('div');
@@ -40,12 +41,29 @@ export class YouSure {
         return tempContainer.firstElementChild;
     }
 
+    enterHandler(ev) {
+        if(ev.key === 'Enter') {
+            this.accepted();
+        } else if(ev.key === 'Esc') {
+            this.declined();
+        }
+    }
+
     listeners() {
+        document.addEventListener('keydown', this.enterHandler);
         this.acceptButton.addEventListener("click", () => {
-            this.accept$.dispatchEvent(new CustomEvent('accepted'));
+            this.accepted();
         })
         this.declineButton.addEventListener("click", () => {
-            this.decline$.dispatchEvent(new CustomEvent('declined'));
+            this.declined();
         })
+    }
+
+    accepted() {
+        this.accept$.dispatchEvent(new CustomEvent('accepted'));
+    }
+
+    declined() {
+        this.decline$.dispatchEvent(new CustomEvent('declined'));
     }
 }

@@ -4,8 +4,6 @@ import { Server } from 'socket.io';
 import gatewaySessionManager from "./sessions.js";
 import { authenticateSocket } from '../middlewares/authenticateSocket.js';
 
-console.log(gatewaySessionManager);
-
 export const configureIO = (app) => {
     const server = createServer(app);
     const io = new Server(server);

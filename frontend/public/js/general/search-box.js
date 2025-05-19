@@ -71,7 +71,7 @@ export class SearchBox {
         if (this.users.length > 0) {
             template = this.users.map(user => `
                  <a class="contacts-list-item list-hoverable" href="/users/${user.user_name}">
-                   <img src="/files/users/user.png" class="contacts-list-item-media">
+                    <i class="material-symbols-outlined list-item-avatar">account_circle</i>
                    <span class="contacts-list-item-content">${user.full_name}</h4></span>
                  </a>
                 `).join('');

@@ -1,10 +1,11 @@
-import { getAccountBlocksView, getAccountContactsView, getAccountInfoView, getAccountRelationsView, getBlocksView, getFriendsView, getIndexView, getIngoingRequestsView, getIngoingUserRequestsView, getOutgoingRequestsView, getOutgoingUserRequestsView, getSharesView, getUserBlocksView, getUserFriendsView, getUserNameView } from "../handlers/view.js";
+import { getAccountBlocksView, getAccountContactsView, getAccountInfoView, getAccountRelationsView, getBlocksView, getFriendsView, getIndexView, getIngoingRequestsView, getIngoingUserRequestsView, getOutgoingRequestsView, getOutgoingUserRequestsView, getSharesView, getUserBlocksView, getUserFriendsView, getUserNameView, getUserSharesView } from "../handlers/view.js";
 
 export const GetIndexView = async (req, res, next) => {
     const mode = req.mode;
-    const { contacts, user_name, posts } = await getIndexView(req.cookies);
+    const { contacts, user_name, posts, groups } = await getIndexView(req.cookies);
     const pathname = 'index';
-    res.render('index', { contacts, pathname, user_name, posts, mode });
+    console.log(contacts, 'contactrs')
+    res.render('index', { contacts, pathname, user_name, posts, mode, groups });
 }
 
 export const GetLoginView = async (req, res, next) => {
@@ -78,22 +79,29 @@ export const GetUserBlocksView = async (req, res, next) => {
 }
 
 export const GetUserNameView = async (req, res, next) => {
-    const userName = req.params.userName;
-    const { user, posts, contacts } = await getUserNameView(req.cookies, userName);
+    const user_name = req.params.userName;
+    const { user, posts, contacts } = await getUserNameView(req.cookies, user_name);
     console.log(posts);
     const mode = req.mode;
-    res.render('user-page', { user, posts, contacts, mode });
+    res.render('user-page', { user, posts, contacts, mode, user_name });
 }
 
 export const GetSharesView = async (req, res, next) => {
     const { posts, contacts, user_name } = await getSharesView(req.cookies);
     const pathname = 'shares';
     const mode = req.mode;
+    console.log(posts, 'posts');
     res.render('shares', { pathname, contacts, user_name, posts, mode });
 }
 
 export const GetUserSharesView = async (req, res, next) => {
-
+    const user_name = req.params.userName;
+    const { posts, contacts, user } = await getUserSharesView(req.cookies, user_name);
+    const pathname = 'shares';
+    const mode = req.mode;
+    console.log(posts, 'posts');
+    console.log(user);
+    res.render('user-shares', { pathname, contacts, posts, mode, user, user_name });
 }
 
 export const GetAccountView = async (req, res, next) => {

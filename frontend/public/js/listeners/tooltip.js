@@ -5,7 +5,6 @@ export const tooltipListener = () => {
         toolTips.forEach(toolTip => {
             const tooltipText = toolTip.getAttribute('data-tooltip');
             let tooltip;
-            console.log(tooltipText);
             toolTip.addEventListener('mouseenter', () => {
                 tooltip = document.createElement('div');
                 tooltip.classList.add('tooltip');

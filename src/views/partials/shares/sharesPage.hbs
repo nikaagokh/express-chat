@@ -3,16 +3,18 @@
     {{#each posts as |post i|}}
     <div class="post-card" data-post-id="{{post.post_id}}">
         <div class="list-item">
-            <img class="list-item-avatar" src="/public/images/users/{{post.image}}">
+           <i class="material-symbols-outlined list-item-avatar">account_circle</i>
             <span class="list-item-content">
                 <a class="list-item-title" href="/users/{{post.user_name}}">{{post.full_name}}</a>
                 <div class="list-item-line">{{getDate post.created_at}}</div>
             </span>
+            <!--
             <div class="list-item-actions">
                 <a class="button button-link button-link-active" href="/posts/{{post.post_id}}">
                     დეტალურად...
                 </a>
             </div>
+            -->
         </div>
         <div class="post-card-content">
             <p class="post-card-content-desc">{{post.content}}</p>
@@ -78,6 +80,7 @@
                     </button>
                     <span class="post-card-action-number like-number">{{post.likes}}</span>
                 </div>
+                <!--
                 <div class="post-card-action-flex">
                     <button class="button button-icon post-card-unlike" data-tooltip="არმოწონება">
                         <i class="material-symbols-outlined icon-action" {{#if post.unliked}}
@@ -86,6 +89,7 @@
                     </button>
                     <span class="post-card-action-number unlike-number">{{post.unlikes}}</span>
                 </div>
+                -->
                 <div class="post-card-action-flex">
                     <button class="button button-icon post-card-comment" data-tooltip="კომენტირება">
                         <i class="material-symbols-outlined icon-action">comment</i>
@@ -94,10 +98,10 @@
                 </div>
             </div>
             <div class="post-card-action-wrapper">
-                <button class="button button-icon post-card-download" data-tooltip="გადმოწერა"
-                    data-media-name="{{post.medias.[0].media_name}}">
+                <a class="button button-icon post-card-download" data-tooltip="გადმოწერა" href="/files/posts/{{post.medias.[0].media_name}}"
+                 style="display: {{#notEmpty post.medias}}flex{{else}}none{{/notEmpty}};" download>
                     <i class="material-symbols-outlined icon-action">download</i>
-                </button>
+                </a>
                 <button class="button button-icon post-card-share" data-tooltip="გაზიარება"
                     data-post-id="{{post.post_id}}">
                     <i class="material-symbols-outlined icon-action">share</i>

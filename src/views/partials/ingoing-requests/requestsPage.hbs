@@ -4,7 +4,7 @@
     <div class="list" id="ingoingRequestsList">
         {{#each requests as |request i|}}
         <div class="list-item list-divider" data-user-id="{{request.user_id}}" data-user-name="{{request.user_name}}">
-            <img src="/files/users/{{request.image}}" class="list-item-avatar">
+            <i class="material-symbols-outlined list-item-avatar">account_circle</i>
             <span class="list-item-content">
                 <h4 class="list-item-title">{{request.full_name}}</h4>
             </span>

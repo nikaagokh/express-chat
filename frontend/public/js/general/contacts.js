@@ -9,8 +9,9 @@ export class Contacts {
         this.socketService = socketService;
         this.debounce = this.debounce.bind(this);
         this.handleInputDebounced = this.handleInputDebounced.bind(this);
-        this.contactUsers = document.querySelectorAll('.contacts-list-item');
         this.contactsGroup = document.querySelector('.contacts-group');
+        this.contactUsers = this.contactsGroup.querySelectorAll('.contacts-list-item');
+        this.chatGroup = document.querySelector('.chat-group');
         this.contactsInput = document.querySelector('#contactsInput');
         this.contactsAddButton = document.querySelector('#contactsAddButton');
         this.listeners();
@@ -35,10 +36,16 @@ export class Contacts {
             console.log(contactItem);
             if (online && contactItem) {
                 contactItem.classList.add('contacts-list-item-active');
-            } else if(!online && contactItem) {
+            } else if (!online && contactItem) {
                 contactItem.classList.remove('contacts-list-item-active');
             }
-        })
+        });
+
+        this.chatGroup.querySelectorAll('.contacts-list-item').forEach(chatGroup => {
+            chatGroup.addEventListener('click', () => {
+                this.openChatGroup(chatGroup);
+            });
+        });
     }
 
     debounce(func, delay) {
@@ -74,10 +81,18 @@ export class Contacts {
     }
 
     openUserChat(contactUser) {
+        console.log('2')
         const userId = Number(contactUser.getAttribute('data-user-id'));
         const conversationId = Number(contactUser.getAttribute('data-conversation-id'));
         const userName = contactUser.getAttribute('data-user-name');
         const userFullName = contactUser.querySelector('span').textContent;
         this.overlayService.openChat(conversationId, userId, userFullName, userName);
+    }
+
+    openChatGroup(chatGroup) {
+        console.log('1');
+        const conversationId = Number(chatGroup.getAttribute('data-conversation-id'));
+        const chatName = chatGroup.querySelector('span').textContent;
+        this.overlayService.openGroup(conversationId, chatName);
     }
 }

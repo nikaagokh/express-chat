@@ -1,8 +1,8 @@
 import { getFormatedDate, getFormatedTime } from "../utils/helper.js";
-import { getMany, getOne } from "../utils/index.js";
+import { getMany, getOne, updateRow } from "../utils/index.js";
 import { getStatusByConversationId } from "./chat.js";
 import { getPostLikes, getPostUnlikes } from "./post.js";
-import { getUserFriendIds, userInFriendship } from "./relations.js";
+import { getMyRelation, getUserFriendIds, userInFriendship } from "./relations.js";
 
 const limit = 20;
 
@@ -143,6 +143,94 @@ ORDER BY
     return posts;
 }
 
+export const usersShares = async (p_user_id, p_user_name) => {
+    const user = await getOne('SELECT user_id FROM users WHERE user_name = ?', [p_user_name]);
+    const user_id = user.user_id;
+    const sql = `SELECT
+    p.post_id,
+        p.content,
+        p.post_type,
+        p.created_at,
+        u.user_id,
+        CONCAT(u.first_name, ' ', u.last_name) AS full_name,
+            u.image,
+            u.user_name,
+            IFNULL(comments.comments_json, '[]') AS comments,
+                IFNULL(medias.medias_json, '[]') AS medias,
+                    MAX(CASE 
+        WHEN pr.user_id = ${user_id} AND pr.reaction_type = 1 THEN 1 
+        ELSE 0 
+    END) AS liked,
+        MAX(CASE 
+        WHEN pr.user_id = ${user_id} AND pr.reaction_type = 0 THEN 1 
+        ELSE 0 
+    END) AS unliked
+    FROM 
+    posts p
+LEFT JOIN 
+    users u ON u.user_id = p.user_id
+LEFT JOIN
+        (
+            SELECT 
+            c.post_id,
+            CONCAT('[', GROUP_CONCAT(
+                CONCAT('{"comment_id":', c.comment_id,
+                    ',"content":"', c.content, '"',
+                    ',"user_id":', c.user_id, '',
+                    ',"created_at":"', c.created_at, '"}')
+                ORDER BY c.created_at ASC SEPARATOR ','), ']') AS comments_json
+        FROM 
+            comments c
+        GROUP BY 
+            c.post_id
+        ) AS comments ON comments.post_id = p.post_id
+LEFT JOIN
+        (
+            SELECT 
+            pm.post_id,
+            CONCAT('[', GROUP_CONCAT(
+                CONCAT('{"media_type":"', pm.media_type, '"',
+                    ',"media_name":"', pm.media_name, '"',
+                    ',"media_size":', pm.media_size, '}')
+                ORDER BY pm.media_name ASC SEPARATOR ','), ']') AS medias_json
+        FROM 
+            post_media pm
+        GROUP BY 
+            pm.post_id
+        ) AS medias ON medias.post_id = p.post_id
+LEFT JOIN 
+    post_reactions pr ON pr.post_id = p.post_id
+LEFT JOIN 
+    post_shares ps ON ps.post_id = p.post_id
+    WHERE
+    ps.user_id = ?
+        GROUP BY
+    p.post_id,
+        p.content,
+        p.post_type,
+        p.created_at,
+        u.user_id,
+        full_name,
+        u.image
+ORDER BY
+    p.created_at DESC`;
+
+    const posts = await getMany(sql, [user_id]);
+    for (var i = 0; i < posts.length; i++) {
+        const post = posts[i];
+        if (post.hasOwnProperty('comments')) {
+            post.comments = JSON.parse(post.comments);
+        }
+        if (post.hasOwnProperty('medias')) {
+            post.medias = JSON.parse(post.medias);
+        }
+
+        post.likes = await getPostLikes(post.post_id);
+        post.unlikes = await getPostUnlikes(post.post_id);
+    }
+    return posts;
+}
+
 export const usersFriends = async (p_user_id, p_user_name) => {
     const user = await getOne('SELECT user_id FROM users WHERE user_name = ?', [p_user_name]);
     const user_id = user.user_id;
@@ -169,6 +257,53 @@ export const usersFriends = async (p_user_id, p_user_name) => {
         user.online = getStatusByConversationId(conversation_id);
     }
     return users;
+}
+
+export const usersPostLikeAuthors = async (p_user_id, p_post_id) => {
+    const sql = `SELECT u.user_id, u.first_name, u.last_name, CONCAT(u.first_name, ' ', u.last_name) as full_name, u.user_name, u.image, gl_user_role_id
+                 FROM users u
+                 LEFT JOIN post_reactions pr ON pr.user_id = u.user_id
+                 WHERE pr.reaction_type = 1 AND pr.post_id = ?;`
+    const users = await getMany(sql, [p_post_id]);
+    for (var i = 0; i < users.length; i++) {
+        const user = users[i];
+        const user_id = user.user_id;
+        const relation = await getMyRelation(p_user_id, user_id);
+        if (!relation) {
+            user.relation_type = 0;
+        } else {
+            user.relation_type = relation.relation_type;
+        }
+    }
+    return users;
+}
+
+export const usersPostUnLikeAuthors = async (p_user_id, p_post_id) => {
+    const sql = `SELECT u.user_id, u.first_name, u.last_name, CONCAT(u.first_name, ' ', u.last_name) as full_name, u.user_name, u.image, gl_user_role_id
+                 FROM users u
+                 LEFT JOIN post_reactions pr ON pr.user_id = u.user_id
+                 WHERE pr.reaction_type = 0 AND pr.post_id = ?;`
+    const users = await getMany(sql, [p_post_id]);
+    for (var i = 0; i < users.length; i++) {
+        const user = users[i];
+        const user_id = user.user_id;
+        const relation = await getMyRelation(p_user_id, user_id);
+        if (!relation) {
+            user.relation_type = 0;
+        } else {
+            user.relation_type = relation.relation_type;
+        }
+    }
+    return users;
+}
+
+export const usersUploadProfile = async (p_user_id, files) => {
+    const sql = `SELECT * FROM users WHERE user_id = ?`;
+    const user = await getOne(sql, [p_user_id]);
+    const fileName = files[0].filename;
+    const fileObject = { image: fileName };
+    await updateRow('users', fileObject, { user_id: user.user_id });
+    return fileName;
 }
 
 export const usersContacts = async (p_user_id, p_user_name) => {

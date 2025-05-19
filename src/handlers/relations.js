@@ -42,6 +42,7 @@ export const relationsContactUsers = async (p_user_id) => {
         const initConversation = await getOne('select * from init_conversation where (from_id = ? AND to_id = ?) OR (from_id = ? AND to_id = ?);', [p_user_id, user_id, user_id, p_user_id]);
         const conversation_id = initConversation.conversation_id;
         user.conversation_id = conversation_id;
+        
         user.online = getStatusByConversationId(conversation_id);
     }
     return users;
@@ -186,7 +187,7 @@ const checkIfConversationExists = async (p_from_id, p_to_id) => {
 }
 
 
-const getMyRelation = async (p_from_id, p_to_id) => {
+export const getMyRelation = async (p_from_id, p_to_id) => {
     const sql = `SELECT * FROM user_relations where from_id = ? and to_id = ?`;
     const relation = await getOne(sql, [p_from_id, p_to_id]);
     return relation;

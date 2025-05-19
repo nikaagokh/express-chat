@@ -27,6 +27,18 @@ class HttpService {
     }
 
     /* start chat */
+
+    async createGroupChat(groupName, userIds) {
+        const object = this.generateOptions({ groupName, userIds });
+        return fetch(`http://${this.host}/api/chat/create/group`, object)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('');
+                }
+                return response.json();
+            })
+    }
+
     async getChatMessages(conversationId, userId) {
         return fetch(`http://${this.host}/api/chat/init?conversation_id=${conversationId}&user_id=${userId}`)
             .then(response => {
@@ -176,9 +188,77 @@ class HttpService {
                 return response.json();
             })
     }
+
+    async uploadProfile(files) {
+        const formData = new FormData();
+        files.forEach(file => {
+            formData.append('file', file);
+        });
+
+        return fetch(`http://${this.host}/api/users/profile`, {
+            method: "POST",
+            body: formData
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('Error Ocurred');
+            }
+            return response.json();
+        })
+    }
     /* end users */
 
     /* start post */
+
+    async getPostLikes(post_id) {
+        return fetch(`http://${this.host}/api/users/likes/${post_id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error Ocurred');
+                }
+                return response.json();
+            })
+    }
+
+    async getPostUnLikes(post_id) {
+        return fetch(`http://${this.host}/api/users/unlikes/${post_id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error Ocurred');
+                }
+                return response.json();
+            })
+    }
+
+    async getPostComments(post_id) {
+        return fetch(`http://${this.host}/api/post/comments/${post_id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error Ocurred');
+                }
+                return response.json();
+            })
+    }
+
+    async getPostReactions(post_id) {
+        return fetch(`http://${this.host}/api/users/reactions/${post_id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error Ocurred');
+                }
+                return response.json();
+            })
+    }
+
+    async sharePost(post_id) {
+        const object = this.generateOptions({ post_id });
+        return fetch(`http://${this.host}/api/post/share`, object)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error Ocurred');
+                }
+                return response.json();
+            })
+    }
 
     async manageLike(post_id) {
         const object = this.generateOptions({ post_id });

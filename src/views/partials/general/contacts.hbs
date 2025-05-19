@@ -1,4 +1,4 @@
-<div class="contacts-wrapper">
+<div class="contacts-wrapper contacts-scroll">
     <div class="contacts-header">
         <div class="input-wrapper" id="contactsInputWrapper">
             <input type="text" id="contactsInput" class="input-self contacts-input" placeholder="გაფილტრე სახელით">
@@ -13,12 +13,24 @@
     <div class="contacts-list">
         <h3>კონტაქტები</h3>
         <div class="contacts-group">
-        {{#each contacts as |contact i|}}
-        <div class="contacts-list-item list-hoverable {{#if contact.online}}contacts-list-item-active{{/if}}" data-conversation-id="{{contact.conversation_id}}" data-user-id="{{contact.user_id}}" data-user-name="{{contact.user_name}}">
-            <img class="contacts-list-item-media" src="/public/images/users/{{contact.image}}">
-            <span class="contacts-list-item-content">{{contact.full_name}}</span>
+            {{#each contacts as |contact i|}}
+            <div class="contacts-list-item list-hoverable {{#if contact.online}}contacts-list-item-active{{/if}}"
+                data-conversation-id="{{contact.conversation_id}}" data-user-id="{{contact.user_id}}"
+                data-user-name="{{contact.user_name}}">
+                <i class="material-symbols-outlined contacts-list-item-media">account_circle</i>
+                <span class="contacts-list-item-content">{{contact.full_name}}</span>
+            </div>
+            {{/each}}
         </div>
-        {{/each}}
+        <h3>ჯგუფები</h3>
+        <div class="chat-group">
+            {{#each groups as |group i|}}
+            <div class="contacts-list-item list-hoverable {{#if group.online}}contacts-list-item-active{{/if}}"
+                data-conversation-id="{{group.conversation_id}}" data-chat-name="{{group.title}}">
+                <i class="material-symbols-outlined contacts-list-item-media">group</i>
+                <span class="contacts-list-item-content">{{group.title}}</span>
+            </div>
+            {{/each}}
         </div>
     </div>
 </div>

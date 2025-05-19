@@ -8,6 +8,12 @@ export const getIndexView = async (cookies) => {
         }
     });
     const contacts = contactsResponse.data;
+    const groupsResponse = await axios.get('http://localhost:3005/api/chat/groups', {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const groups = groupsResponse.data;
     const userNameResponse = await axios.get('http://localhost:3005/api/users/userName', {
         headers: {
             Cookie: serializeCookies(cookies)
@@ -20,7 +26,8 @@ export const getIndexView = async (cookies) => {
         }
     });
     const posts = postsResponse.data;
-    return { contacts, user_name, posts };
+    //console.log(groups, 'groups')
+    return { contacts, user_name, posts, groups };
 }
 
 export const getFriendsView = async (cookies) => {
@@ -141,7 +148,7 @@ export const getIngoingRequestsView = async (cookies) => {
         }
     });
     const { user_name } = userNameResponse.data;
-    return { requests, contacts, user_name, user };
+    return { requests, contacts, user_name };
 }
 
 export const getIngoingUserRequestsView = async (cookies) => {
@@ -265,6 +272,29 @@ export const getSharesView = async (cookies) => {
     });
     const { user_name } = userNameResponse.data;
     return { posts, contacts, user_name };
+}
+
+export const getUserSharesView = async (cookies, user_name) => {
+    const postsResponse = await axios.get(`http://localhost:3005/api/users/shares/${user_name}`, {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const posts = postsResponse.data;
+    console.log(posts, 'posts')
+    const contactsResponse = await axios.get('http://localhost:3005/api/relations/contact-users', {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const contacts = contactsResponse.data;
+    const userResponse = await axios.get(`http://localhost:3005/api/users/about/${user_name}`, {
+        headers: {
+            Cookie: serializeCookies(cookies)
+        }
+    });
+    const user = userResponse.data;
+    return { contacts, posts, user };
 }
 
 export const getAccountInfoView = async (cookies) => {

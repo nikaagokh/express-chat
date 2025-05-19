@@ -3,15 +3,12 @@ import { initSocket } from "../socket/socket.js";
 import { Contacts } from "../general/contacts.js";
 import { Header } from "../general/header.js";
 import { UserPageAbout } from "./user-page-about.js";
-
-export class UserPagePosts {
-
-}
+import { Posts } from "../general/posts.js";
 
 function init() {
     initListeners();
     initSocket();
-    new UserPagePosts();
+    new Posts();
     new UserPageAbout();
     new Contacts();
     new Header();

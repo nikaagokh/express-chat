@@ -4,6 +4,8 @@ import { pool } from "../database/connect.js";
 import { Message } from '../model/messages.model.js';
 import { getFormatedDate, getFormatedTime } from "../utils/helper.js";
 import { MessageMedia } from "../model/message-media.model.js";
+import { Conversation } from "../model/conversations.model.js";
+import { UserConversation } from "../model/user-conversations.model.js";
 import gatewaySessionManager from "../gateway/sessions.js";
 
 export const chatSendMessage = async (userId, content, conversationId,) => {
@@ -45,7 +47,7 @@ export const chatSendFile = async (userId, content, conversationId, files) => {
         const messageMedia = new MessageMedia(message_id, media_type, media_name, media_size);
         await insertRow('message_media', messageMedia);
     }
-    return {a:1};
+    return { a: 1 };
     return { message: getMessage, conversationId: conversationId };
 }
 
@@ -98,7 +100,7 @@ export const chatMedia = async (userId, conversationId, fileName = '', offset) =
                  ORDER BY m.created_at DESC
                  LIMIT ${limit}`;
     const messages = await getMany(sql, [conversationId]);
-                
+
     let sortedMessages;
     if (fileName !== '') {
         sortedMessages = sortMessagesByPath(messages, fileName);
@@ -147,6 +149,12 @@ export const chatFiles = async (userId, conversationId, filename) => {
 }
 
 export const chatInitConversation = async (user_id, conversation_id, contact_id) => {
+    const messagesDate = await getMessagesFromConversation(user_id, conversation_id);
+    const online = getStatusByConversationId(conversation_id);
+    return { conversation_id, messagesDate, online };
+}
+
+export const chatInitGroup = async (user_id, conversation_id) => {
     const messagesDate = await getMessagesFromConversation(user_id, conversation_id);
     const online = getStatusByConversationId(conversation_id);
     return { conversation_id, messagesDate, online };
@@ -343,6 +351,32 @@ export const chatUserConversation = async (userId, conversationId) => {
                      `;
     const users = await getMany(sql, [userId, conversationId]);
     return users;
+}
+
+export const chatGroups = async (userId) => {
+    const sql = `
+    select c.conversation_id, c.title, c.conversation_type, c.last_message_id, c.admin_id, c.image, c.created_at, uc.seen from conversations c 
+    left join user_conversations uc ON uc.conversation_id = c.conversation_id
+    where uc.user_id = ? AND c.conversation_type = 2;
+    `;
+    const groups = await getMany(sql, [userId]);
+    return groups;
+}
+
+export const chatCreateGroup = async (adminId, groupName, userIds) => {
+    const exist = await getOne(`SELECT * FROM conversations WHERE title = ?`, [groupName]);
+    if (exist) throwError('ჩათი მსგავსი სახელით უკვე არსებობს', 400);
+    const conversation = new Conversation(groupName, 2, null, adminId);
+    const [qr] = await insertRow('conversations', conversation);
+    const conversationId = qr.insertId;
+    const userConversation = new UserConversation(adminId, conversationId);
+    await insertRow('user_conversations', userConversation);
+    for (var i = 0; i < userIds.length; i++) {
+        const userId = userIds[i];
+        const userConversation = new UserConversation(userId, conversationId);
+        await insertRow('user_conversations', userConversation);
+    }
+    return await getOne(`SELECT * FROM conversations WHERE conversation_id = ?`, [conversationId]);
 }
 
 const tryAddSeen = async (userId, conversationId) => {

@@ -112,12 +112,12 @@ ORDER BY
 `;
 
     const posts = await getMany(sql, friendIds);
-    for(var i = 0; i < posts.length; i++) {
+    for (var i = 0; i < posts.length; i++) {
         const post = posts[i];
         if (post.hasOwnProperty('comments')) {
             post.comments = JSON.parse(post.comments);
         }
-        if(post.hasOwnProperty('medias')) {
+        if (post.hasOwnProperty('medias')) {
             post.medias = JSON.parse(post.medias);
         }
 
@@ -159,32 +159,88 @@ ORDER BY p.created_at DESC`;
 }
 
 export const getSharedPosts = async (user_id) => {
-    const sql = `SELECT 
-    p.post_id, p.content, p.post_type, p.created_at, u.user_id, CONCAT(u.first_name, ' ', u.last_name) as full_name, u.image,
-    CONCAT('[', GROUP_CONCAT(
-        CONCAT('{"comment_id":', c.comment_id, 
-               ',"content":"', c.content, '"',
-               ',"user_id":', c.user_id, ''
-               ',"created_at":"', c.created_at,'"}')
-    ), ']') AS comments
-FROM 
+    const sql = `SELECT
+    p.post_id,
+        p.content,
+        p.post_type,
+        p.created_at,
+        u.user_id,
+        CONCAT(u.first_name, ' ', u.last_name) AS full_name,
+            u.image,
+            u.user_name,
+            IFNULL(comments.comments_json, '[]') AS comments,
+                IFNULL(medias.medias_json, '[]') AS medias,
+                    MAX(CASE 
+        WHEN pr.user_id = ${ user_id } AND pr.reaction_type = 1 THEN 1 
+        ELSE 0 
+    END) AS liked,
+        MAX(CASE 
+        WHEN pr.user_id = ${ user_id } AND pr.reaction_type = 0 THEN 1 
+        ELSE 0 
+    END) AS unliked
+    FROM 
     posts p
 LEFT JOIN 
-    comments c ON c.post_id = p.post_id
-LEFT JOIN 
     users u ON u.user_id = p.user_id
+LEFT JOIN
+        (
+            SELECT 
+            c.post_id,
+            CONCAT('[', GROUP_CONCAT(
+                CONCAT('{"comment_id":', c.comment_id,
+                    ',"content":"', c.content, '"',
+                    ',"user_id":', c.user_id, '',
+                    ',"created_at":"', c.created_at, '"}')
+                ORDER BY c.created_at ASC SEPARATOR ','), ']') AS comments_json
+        FROM 
+            comments c
+        GROUP BY 
+            c.post_id
+        ) AS comments ON comments.post_id = p.post_id
+LEFT JOIN
+        (
+            SELECT 
+            pm.post_id,
+            CONCAT('[', GROUP_CONCAT(
+                CONCAT('{"media_type":"', pm.media_type, '"',
+                    ',"media_name":"', pm.media_name, '"',
+                    ',"media_size":', pm.media_size, '}')
+                ORDER BY pm.media_name ASC SEPARATOR ','), ']') AS medias_json
+        FROM 
+            post_media pm
+        GROUP BY 
+            pm.post_id
+        ) AS medias ON medias.post_id = p.post_id
 LEFT JOIN 
-     post_shares ps ON ps.post_id = p.post_id
-WHERE ps.user_id = ?
-GROUP BY 
-    p.post_id
-ORDER BY p.created_at DESC`;
+    post_reactions pr ON pr.post_id = p.post_id
+LEFT JOIN 
+    post_shares ps ON ps.post_id = p.post_id
+    WHERE
+    ps.user_id = ?
+        GROUP BY
+    p.post_id,
+        p.content,
+        p.post_type,
+        p.created_at,
+        u.user_id,
+        full_name,
+        u.image
+ORDER BY
+    p.created_at DESC`;
+
     const posts = await getMany(sql, [user_id]);
-    posts.forEach(post => {
+    for (var i = 0; i < posts.length; i++) {
+        const post = posts[i];
         if (post.hasOwnProperty('comments')) {
             post.comments = JSON.parse(post.comments);
         }
-    })
+        if (post.hasOwnProperty('medias')) {
+            post.medias = JSON.parse(post.medias);
+        }
+
+        post.likes = await getPostLikes(post.post_id);
+        post.unlikes = await getPostUnlikes(post.post_id);
+    }
     return posts;
 }
 
@@ -299,8 +355,8 @@ export const postManageLike = async (user_id, post_id) => {
                  WHERE pr.post_id = ? AND pr.user_id = ? AND pr.reaction_type = 0
                  `
         const unlike = await getOne(sql, [post_id, user_id]);
-        if(unlike) {
-            deleteRow('post_reactions', {post_reaction_id: unlike.post_reaction_id});
+        if (unlike) {
+            deleteRow('post_reactions', { post_reaction_id: unlike.post_reaction_id });
         }
         return { like: true };
     }
@@ -323,11 +379,21 @@ export const postManageUnLike = async (user_id, post_id) => {
                  WHERE pr.post_id = ? AND pr.user_id = ? AND pr.reaction_type = 1
                  `
         const like = await getOne(sql, [post_id, user_id]);
-        if(like) {
-            deleteRow('post_reactions', {post_reaction_id: like.post_reaction_id});
+        if (like) {
+            deleteRow('post_reactions', { post_reaction_id: like.post_reaction_id });
         }
         return { unlike: true };
     }
+}
+
+export const postComments = async (user_id, post_id) => {
+    const sql = `SELECT c.comment_id, c.content, c.post_id, pc.created_at, u.user_id, u.user_name, CONCAT(u.first_name, ' ', u.last_name) as full_name, u.image, u.gl_user_role_id
+                 FROM comments c 
+                 LEFT JOIN post_comments pc ON pc.comment_id = c.comment_id
+                 LEFT JOIN users u ON u.user_id = c.user_id
+                 WHERE pc.post_id = ?;`;
+    const comments = await getMany(sql, [post_id]);
+    return comments;
 }
 
 export const postAddComment = async (user_id, post_id, content) => {

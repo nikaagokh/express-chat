@@ -1,0 +1,111 @@
+{{#each posts as |post i|}}
+<div class="post-card" data-post-id="{{post.post_id}}">
+    <div class="list-item">
+        <i class="material-symbols-outlined list-item-avatar">account_circle</i>
+        <span class="list-item-content">
+            <a class="list-item-title" href="/users/{{post.user_name}}">{{post.full_name}}</a>
+            <div class="list-item-line">{{getDate post.created_at}}</div>
+        </span>
+        <div class="list-item-actions">
+            <a class="button button-link button-link-active" href="/posts/{{post.post_id}}">
+                დეტალურად...
+            </a>
+        </div>
+    </div>
+    <div class="post-card-content">
+        <p class="post-card-content-desc">{{post.content}}</p>
+        {{#compare post.post_type '==' 2}}
+        <div class="post-card-content-inner">
+            {{#notEmpty post.medias}}
+            {{#compare post.medias.[0].media_type '==' 1}}
+            <img src="/files/posts/{{post.medias.[0].media_name}}" class="post-card-content-img">
+            {{else}}
+            {{#compare post.medias.[0].media_type '==' 2}}
+            <video width="100%" controls>
+                <source src="/files/posts/{{post.medias.[0].media_name}}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            {{else}}
+            <img src="/files/posts/file.png" class="post-card-content-img" style="width: 80px; height:40px;">
+            <div class="post-card-content-file">{{post.medias.[0].media_name}}</div>
+            {{/compare}}
+            {{/compare}}
+            {{/notEmpty}}
+        </div>
+        {{/compare}}
+        {{#ifArrayOne post.medias}}
+        <div class="post-card-swipper-body">
+            <div class="post-card-swipper-flex">
+                {{#each post.medias as |media j|}}
+                <div class="post-card-swipper-item {{#compare j '==' 0}}swipper-active{{/compare}}"
+                    data-media-type="{{media.media_type}}" data-media-name="{{media.media_name}}"
+                    data-activate-id="{{j}}">
+                    {{#compare media.media_type '==' 1}}
+                    <img src="/files/posts/{{media.media_name}}" class="post-card-content-img">
+                    {{else}}
+                    {{#compare media.media_type '==' 2}}
+                    <video width="100%" controls>
+                        <source src="/files/posts/{{media.media_name}}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    {{else}}
+                    <img src="/files/posts/file.png" class="post-card-content-img" style="width: 80px; height:40px;">
+                    {{/compare}}
+                    {{/compare}}
+                </div>
+                {{/each}}
+            </div>
+            <button class="button button-icon post-card-swipper-left">
+                <i class="material-symbols-outlined">chevron_left</i>
+            </button>
+            <button class="button button-icon post-card-swipper-right">
+                <i class="material-symbols-outlined">chevron_left</i>
+            </button>
+        </div>
+        {{/ifArrayOne}}
+
+    </div>
+    <div class="post-card-actions">
+        <div class="post-card-action-wrapper">
+            <div class="post-card-action-flex">
+                <button class="button button-icon post-card-like" data-tooltip="მოწონება">
+                    <i class="material-symbols-outlined icon-action" {{#if post.liked}}
+                        style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;" {{/if}}>thumb_up</i>
+                </button>
+                <span class="post-card-action-number like-number">{{post.likes}}</span>
+            </div>
+            <div class="post-card-action-flex">
+                <button class="button button-icon post-card-unlike" data-tooltip="არმოწონება">
+                    <i class="material-symbols-outlined icon-action" {{#if post.unliked}}
+                        style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;"
+                        {{/if}}>thumb_down</i>
+                </button>
+                <span class="post-card-action-number unlike-number">{{post.unlikes}}</span>
+            </div>
+            <div class="post-card-action-flex">
+                <button class="button button-icon post-card-comment" data-tooltip="კომენტირება">
+                    <i class="material-symbols-outlined icon-action">comment</i>
+                </button>
+                <span class="post-card-action-number comment-number">{{getLength post.comments}}</span>
+            </div>
+        </div>
+        <div class="post-card-action-wrapper">
+            <button class="button button-icon post-card-download" data-tooltip="გადმოწერა"
+                data-media-name="{{post.medias.[0].media_name}}">
+                <i class="material-symbols-outlined icon-action">download</i>
+            </button>
+            <button class="button button-icon post-card-share" data-tooltip="გაზიარება" data-post-id="{{post.post_id}}">
+                <i class="material-symbols-outlined icon-action">share</i>
+            </button>
+
+        </div>
+    </div>
+    <div class="post-card-add-comment" style="display: none;">
+        <div class="input-wrapper" id="postInputWrapper">
+            <input type="text" id="postInput" class="input-self post-card-input" placeholder="დატოვე კომენტარი...">
+        </div>
+        <button class="button button-icon post-card-comment-add" data-tooltip="დაკომენტარება">
+            <i class="material-symbols-outlined">send</i>
+        </button>
+    </div>
+</div>
